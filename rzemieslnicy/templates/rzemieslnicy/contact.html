@@ -1,0 +1,31 @@
+{% extends 'rzemieslnicy/base.html' %}
+
+{% block content %}
+
+<h4>Wyślij wiadomość do administracji</h4>
+    <form action="" method="post">{% csrf_token %}
+        {{ form.non_field_errors }}
+            <p>
+                {{ form.subject.errors }}
+                {{ form.subject.label_tag }}
+                {{ form.subject }}
+            </p>
+            <div class="input-field col s12">
+                {{ form.message.errors }}
+                {{ form.message.label_tag }}
+                {{ form.message }}
+            </div>
+            <p>
+                {{ form.email.errors }}
+                {{ form.email.label_tag }}
+                {{ form.email }}
+            </p>
+        <button class="waves-effect waves-light btn light-blue lighten-1" type="submit" >Search</button>
+    </form>
+
+    <script>
+      $('#id_message').val('New Text');
+      $('#id_message').trigger('autoresize');
+    </script>
+
+{% endblock content %}

@@ -8,6 +8,8 @@ from .models import Institution, City, Province, Craft
 def pl_to_en(word):
     return word.translate(str.maketrans("ąćęłńóśżźĄĆĘŁŃÓŚŻŹ", "acelnoszzACELNOSZZ"))
 
+# TODO WYSZUKIWANIE PO WOJEWODZTWIE odmiana wojewodztwa
+
 
 def get_search_context(search):
     words = search.split()

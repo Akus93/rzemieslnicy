@@ -75,6 +75,21 @@ class SignupView(generic.View):
         return render_to_response(self.template_name, {'user_form': user_form, 'tradesman_form': tradesman_form}, context_instance=RequestContext(request))
 
 
+class ContactView(generic.View):
+    form_class = ContactForm
+    template_name = 'rzemieslnicy/contact.html'
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            form.send()
+            return HttpResponseRedirect('/success/')
+
+        return render(request, self.template_name, {'form': form})
 
 
 

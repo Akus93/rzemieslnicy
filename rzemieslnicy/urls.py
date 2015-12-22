@@ -11,4 +11,5 @@ urlpatterns = [
     url(r'^success/$', views.SuccessView.as_view(), name='success'),
     url(r'^login/$', 'django.contrib.auth.views.login', name='login'),
     url(r'^logout/$', 'django.contrib.auth.views.logout', {'next_page': '/home/'}, name='logout'),
+    url(r'^contact/$', views.ContactView.as_view(), name='contact'),
 ]

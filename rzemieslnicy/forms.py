@@ -3,6 +3,8 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth import password_validation
 
+from django.core.mail import send_mail
+
 from .models import Tradesman
 
 
@@ -69,3 +71,14 @@ class SearchForm(forms.Form):
     search = forms.CharField(max_length=100, required=True)
 
 
+class ContactForm(forms.Form):
+    subject = forms.CharField(required=True, max_length=100, label='Tytuł')
+    message = forms.CharField(required=True, widget=forms.Textarea(attrs={'class': "materialize-textarea"}), max_length=500, label='Wiadomość')
+    email = forms.EmailField(required=True, max_length=150, label='Twój adres email')
+
+    def send(self):
+        subject = self.cleaned_data['subject']
+        message = self.cleaned_data['message']
+        from_email = self.cleaned_data['email']
+        recipient_list = ['akus.quentin@gmail.com']
+        send_mail(subject=subject, message=message, from_email=from_email, recipient_list=recipient_list)
