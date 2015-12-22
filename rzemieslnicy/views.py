@@ -25,7 +25,7 @@ class IndexView(generic.View):
         if form.is_valid():
             search = form.cleaned_data['search']
             results = get_institutions(search)
-            return render(request, 'rzemieslnicy/search_result.html', {'results': results})
+            return render(request, 'rzemieslnicy/search_result.html', {'institutions': results})
 
         return render(request, self.template_name, {'form': form})
 

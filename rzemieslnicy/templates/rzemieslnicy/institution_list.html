@@ -2,8 +2,9 @@
 
 {% block content %}
 
-{% for institution in institutions %}
-    <li><a href="{% url 'institution' institution.pk %}">Name: {{ institution.name }}</a></li>
-{% endfor %}
-
+    <div class="collection">
+        {% for institution in institutions %}
+            <a class="collection-item" href="{% url 'institution' institution.pk %}">Name: {{ institution.name }}</a>
+        {% endfor %}
+    </div>
 {% endblock content %}

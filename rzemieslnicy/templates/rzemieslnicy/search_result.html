@@ -2,12 +2,14 @@
 
 {% block content %}
 
-    {% if not results %}
+    {% if not institutions %}
         <p>Brak wyników.</p>
     {% else %}
-        {% for result in results %}
-            <li><a href="{% url 'institution' result.pk %}">Name: {{ result.name }}</a></li>
-        {% endfor %}
+        <div class="collection">
+            {% for institution in institutions %}
+                <a class="collection-item" href="{% url 'institution' institution.pk %}">Name: {{ institution.name }}</a>
+            {% endfor %}
+        </div>
     {% endif %}
 
 {% endblock content %}
