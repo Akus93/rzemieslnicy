@@ -1,0 +1,12 @@
+{% extends 'rzemieslnicy/base.html' %}
+
+{% block content %}
+    
+
+<h4>Wyszukaj zakład rzemieślniczy</h4>
+    <form action="" method="post">{% csrf_token %}
+        {{ form.as_p }}
+        <button class="waves-effect waves-light btn light-blue lighten-1" type="submit" >Search</button>
+    </form>
+
+{% endblock content %}

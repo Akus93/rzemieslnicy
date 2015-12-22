@@ -1,0 +1,13 @@
+{% extends 'rzemieslnicy/base.html' %}
+
+{% block content %}
+
+    {% if not results %}
+        <p>Brak wyników.</p>
+    {% else %}
+        {% for result in results %}
+            <li><a href="{% url 'institution' result.pk %}">Name: {{ result.name }}</a></li>
+        {% endfor %}
+    {% endif %}
+
+{% endblock content %}

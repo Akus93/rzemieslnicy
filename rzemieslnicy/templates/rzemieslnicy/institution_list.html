@@ -1,0 +1,9 @@
+{% extends 'rzemieslnicy/base.html' %}
+
+{% block content %}
+
+{% for institution in institutions %}
+    <li><a href="{% url 'institution' institution.pk %}">Name: {{ institution.name }}</a></li>
+{% endfor %}
+
+{% endblock content %}

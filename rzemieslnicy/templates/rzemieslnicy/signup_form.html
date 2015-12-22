@@ -1,0 +1,31 @@
+{% extends 'rzemieslnicy/base.html' %}
+
+{% block content %}
+<div class="card-panel">
+    <h3 class="thin">Sign in</h3>
+
+  <div class="row">
+    <div class="col s12">
+      <ul class="tabs">
+        <li class="tab col s6"><a class="active" href="#User">User</a></li>
+        <li class="tab col s6"><a href="#Tradesman">Tradesman</a></li>
+      </ul>
+    </div>
+    <div id="User" class="col s12">
+        <form action="" method="post">{% csrf_token %}
+            {{ user_form.as_p }}
+            <br>
+            <button class="waves-effect waves-light btn light-blue lighten-1" name="user_form" type="submit" >Sign Up</button>
+        </form>
+    </div>
+    <div id="Tradesman" class="col s12">
+            <form action="" method="post">{% csrf_token %}
+            {{ tradesman_form.as_p }}
+            <br>
+            <button class="waves-effect waves-light btn light-blue lighten-1" name="tradesman_form" type="submit" >Sign Up</button>
+        </form>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}

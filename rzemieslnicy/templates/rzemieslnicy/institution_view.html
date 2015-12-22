@@ -1,0 +1,18 @@
+{% extends 'rzemieslnicy/base.html' %}
+
+{% block content %}
+
+<p>You're looking at institution <b>{{ institution.name }}</b></p>
+<h1>Details:</h1>
+<p>Company name: {{ institution.company.name }}</p>
+<p>Area: {{ institution.area.name }}</p>
+<p>Address: {{ institution.address }}</p>
+<p>City: {{ institution.city.name }}</p>
+<p>Postal code: {{ institution.postal_code }}</p>
+<p>Phone: {{ institution.phone }}</p>
+<p>Email: {{ institution.email }}</p>
+<p>Site: {{ institution.site }}</p>
+<p>Short description: {{ institution.short_description }}</p>
+<p>Long description: {{ institution.long_description }}</p>
+
+{% endblock content %}
