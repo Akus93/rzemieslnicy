@@ -66,7 +66,6 @@ class TradesmanCreationForm(UserCreationForm):
 
 
 class SearchForm(forms.Form):
-    city = forms.CharField(max_length=50)
-    name = forms.CharField(max_length=50, required=True)
+    search = forms.CharField(max_length=100, required=True)
 
 

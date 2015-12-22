@@ -9,7 +9,7 @@ from django.shortcuts import render
 
 from .models import Institution
 
-from .services import get_institutions2
+from .services import get_institutions
 
 
 class IndexView(generic.View):
@@ -23,9 +23,8 @@ class IndexView(generic.View):
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
         if form.is_valid():
-            city = form.cleaned_data['city']
-            name = form.cleaned_data['name']
-            results = get_institutions2(name)  # Institution.objects.filter(name__contains=name, city__name=city)
+            search = form.cleaned_data['search']
+            results = get_institutions(search)
             return render(request, 'rzemieslnicy/search_result.html', {'results': results})
 
         return render(request, self.template_name, {'form': form})
