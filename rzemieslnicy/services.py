@@ -1,3 +1,7 @@
+from operator import and_
+from django.db.models import Q
+from functools import reduce
+
 from .models import Institution, City, Province, Craft
 
 
@@ -21,7 +25,7 @@ def get_search_context(search):
             context['province'].append(word.capitalize())
         elif Craft.objects.filter(name=word.capitalize()).exists():
             context['craft'].append(word.capitalize())
-        elif Institution.objects.filter(name__contains=word).exists():
+        elif Institution.objects.filter(name__icontains=word).exists():
             context['name'].append(word)
     return context
 
@@ -34,17 +38,17 @@ def get_institutions(search):
     if len(context['province']):
         if results is None:
             results = Institution.objects.filter(city__province__name__in=context['province'])
-
     if len(context['craft']):
         if results is not None:
             results = results.filter(institutioncraft__craft__name__in=context['craft'])
         else:
             results = Institution.objects.filter(institutioncraft__craft__name__in=context['craft'])
     if len(context['name']):
-        if not results.filter(name__contains__in=context['name']).exists():
-            results = Institution.objects.filter(name__contains__in=context['name'])
+        query = reduce(and_, (Q(name__icontains=x) for x in context['name']))
+        if results is None:
+            results = Institution.objects.filter(query)
         else:
-            results = results.filter(name__contains__in=context['name'])
+            results = results.filter(query)
     return results
 
 
