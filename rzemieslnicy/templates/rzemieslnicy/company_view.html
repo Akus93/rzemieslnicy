@@ -1,0 +1,13 @@
+{% extends 'rzemieslnicy/base.html' %}
+
+{% block content %}
+
+<p>You're looking at company <b>{{ company.name }}</b></p>
+
+    <p>Yours institutions:</p>
+    <div class="collection">
+        {% for institution in company.institution_set.all %}
+            <a class="collection-item" href="{% url 'institution' institution.pk %}">Name: {{ institution.name }}</a>
+        {% endfor %}
+    </div>
+{% endblock content %}

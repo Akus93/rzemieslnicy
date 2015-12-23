@@ -1,0 +1,29 @@
+{% extends 'rzemieslnicy/base.html' %}
+
+{% block content %}
+
+    <h5>Your account:</h5>
+
+    {% if user.tradesman %}
+        <p>Tradesman</p>
+        <p>NIP: {{ user.tradesman.NIP }}</p>
+        <p><a href="{% url 'account_companies' %}">Your companies</a></p>
+
+
+        Yours companies:
+        {% with companies=user.tradesman.company_set.all %}
+                    <div class="collection">
+                        {% for company in companies %}
+                            <a class="collection-item" href="{% url 'account_company' company.pk %}">Name: {{ company.name }}</a>
+                        {% endfor %}
+                    </div>
+        {% endwith %}
+
+    {% endif %} 
+    
+    <p>Username: {{ user.get_username }}</p>
+    <p>Imie: {{ user.first_name }}</p>
+    <p>Nazwisko: {{ user.last_name }}</p>
+    <p>Data utworzenia konta: {{ user.date_joined }}</p>
+
+{% endblock content %}
