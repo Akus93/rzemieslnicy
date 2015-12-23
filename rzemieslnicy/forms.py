@@ -5,7 +5,7 @@ from django.contrib.auth import password_validation
 
 from django.core.mail import send_mail
 
-from .models import Tradesman
+from .models import Tradesman, Company, Institution
 
 
 class UserCreationForm(forms.ModelForm):
@@ -84,3 +84,30 @@ class ContactForm(forms.Form):
         from_email = self.cleaned_data['email']
         recipient_list = ['akus.quentin@gmail.com']
         send_mail(subject=subject, message=message, from_email=from_email, recipient_list=recipient_list)
+
+
+class CompanyCreationForm(forms.ModelForm):
+
+    class Meta:
+        model = Company
+        fields = ['name', 'krs', 'regon', 'address', 'postal_code', 'city', 'phone', 'email', 'site']
+
+    def __init__(self, *args, **kwargs):
+        self.tradesman = kwargs.pop('tradesman', None)
+        super(CompanyCreationForm, self).__init__(*args, **kwargs)
+
+    def save(self, commit=True):
+        company = super(CompanyCreationForm, self).save(commit=False)
+        company.tradesman = self.tradesman
+        if commit:
+            company.save()
+        return company
+
+
+class InstitutionCreationForm(forms.ModelForm):
+
+    class Meta:
+        model = Institution
+        fields = ['name', 'area', 'address', 'postal_code', 'city', 'phone', 'email', 'site', 'short_description',
+                  'long_description']
+

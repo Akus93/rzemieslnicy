@@ -2,28 +2,37 @@
 
 {% block content %}
 
-    <h5>Your account:</h5>
+    <div class="row">
 
-    {% if user.tradesman %}
-        <p>Tradesman</p>
-        <p>NIP: {{ user.tradesman.NIP }}</p>
-        <p><a href="{% url 'account_companies' %}">Your companies</a></p>
+        <div class="col s6">
+            <h5>Twoje konto:</h5>
+            <p>Username: {{ user.get_username }}</p>
+            <p>Imie: {{ user.first_name }}</p>
+            <p>Nazwisko: {{ user.last_name }}</p>
+            <p>Data utworzenia konta: {{ user.date_joined }}</p>
+            {% if user.tradesman %}
+                <p>NIP: {{ user.tradesman.NIP }}</p>
+            {% endif %}
+        </div>
 
+        <div class="col s6">
+            {% if user.tradesman %}
+                <h5>Twoje firmy:</h5>
+                {% with companies=user.tradesman.company_set.all %}
+                <div class="collection">
+                    {% for company in companies %}
+                        <a class="collection-item" href="{% url 'account_company' company.pk %}">{{ company.name }}</a>
+                    {% endfor %}
+                </div>
+                <div class="right-align">
+                    <a class="btn-floating btn waves-effect waves-light light-blue" href="{% url 'create_company' %}">
+                        <i class="material-icons">add</i>
+                    </a>
+                </div>
+                {% endwith %}
+            {% endif %}
+        </div>
 
-        Yours companies:
-        {% with companies=user.tradesman.company_set.all %}
-                    <div class="collection">
-                        {% for company in companies %}
-                            <a class="collection-item" href="{% url 'account_company' company.pk %}">Name: {{ company.name }}</a>
-                        {% endfor %}
-                    </div>
-        {% endwith %}
-
-    {% endif %} 
-    
-    <p>Username: {{ user.get_username }}</p>
-    <p>Imie: {{ user.first_name }}</p>
-    <p>Nazwisko: {{ user.last_name }}</p>
-    <p>Data utworzenia konta: {{ user.date_joined }}</p>
+    </div>
 
 {% endblock content %}

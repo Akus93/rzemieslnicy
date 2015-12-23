@@ -2,12 +2,34 @@
 
 {% block content %}
 
-<p>You're looking at company <b>{{ company.name }}</b></p>
+    <div class="row">
+        <div class="col s6">
+            <h5>Dane firmy:</h5>
+            <p>Nazwa: {{ company.name }}</p>
+            <p>Właściciel: {{ company.tradesman.full_name }}</p>
+            <p>Krs: {{ company.krs }}</p>
+            <p>Regon: {{ company.regon }}</p>
+            <p>Adres: {{ company.address }}</p>
+            <p>Kod pocztowy: {{ company.postal_code }}</p>
+            <p>Miasto: {{ company.city }}</p>
+            <p>Telefon: {{ company.phone }}</p>
+            <p>Email: {{ company.email }}</p>
+            <p>Strona www: <a href='{{ company.site }}'>{{ company.site }}</a></p>
+        </div>
 
-    <p>Yours institutions:</p>
-    <div class="collection">
-        {% for institution in company.institution_set.all %}
-            <a class="collection-item" href="{% url 'institution' institution.pk %}">Name: {{ institution.name }}</a>
-        {% endfor %}
+        <div class="col s6">
+            <p>Yours institutions:</p>
+            <div class="collection">
+                {% for institution in company.institution_set.all %}
+                    <a class="collection-item" href="{% url 'institution' institution.pk %}">Name: {{ institution.name }}</a>
+                {% endfor %}
+            </div>
+            <div class="right-align">
+                <a class="btn-floating btn waves-effect waves-light light-blue" href="{% url 'create_institution' %}">
+                    <i class="material-icons">add</i>
+                </a>
+            </div>
+        </div>
     </div>
+
 {% endblock content %}

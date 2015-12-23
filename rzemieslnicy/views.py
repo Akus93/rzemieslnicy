@@ -100,15 +100,39 @@ class AccountView(LoginRequiredMixin, generic.TemplateView):
     login_url = '/login/'
 
 
-class CompanyListView(generic.View):
-    template_name = 'rzemieslnicy/companies_list.html'
-
-    def get(self, request, *args, **kwargs):
-        companies = Company.objects.filter(tradesman=self.request.user.tradesman)
-        return render(request, self.template_name, {'companies': companies})
-
-
 class AccountCompanyView(generic.DetailView):
     model = Company
     template_name = 'rzemieslnicy/company_view.html'
     context_object_name = 'company'
+
+
+class CompanyCreateView(generic.View):
+    form_class = CompanyCreationForm
+    template_name = 'rzemieslnicy/company_create.html'
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST, tradesman=request.user.tradesman)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/account/')
+        return render(request, self.template_name, {'form': form})
+
+# TODO ogarnac dodawanie zakladu!
+class InstitutionCreateView(generic.View):
+    form_class = InstitutionCreationForm
+    template_name = 'rzemieslnicy/institution_create.html'
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/account/')
+        return render(request, self.template_name, {'form': form})
