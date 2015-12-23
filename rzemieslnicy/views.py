@@ -7,7 +7,7 @@ from django.template import RequestContext
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
-from .models import Institution
+from .models import Institution, Company
 
 from .services import get_institutions
 
@@ -36,16 +36,15 @@ class InstitutionView(generic.DetailView):
     context_object_name = 'institution'
 
 
-class InstitutionList(generic.ListView):
+class InstitutionListView(generic.ListView):
     model = Institution
     queryset = Institution.objects.all()
     context_object_name = 'institutions'
     template_name = 'rzemieslnicy/institution_list.html'
 
 
-class SuccessView(LoginRequiredMixin, generic.TemplateView):
+class SuccessView(generic.TemplateView):
     template_name = 'rzemieslnicy/success.html'
-    login_url = '/login/'
 
 
 class SignupView(generic.View):
@@ -92,5 +91,24 @@ class ContactView(generic.View):
         return render(request, self.template_name, {'form': form})
 
 
+class AboutView(generic.TemplateView):
+    template_name = 'rzemieslnicy/about.html'
 
 
+class AccountView(LoginRequiredMixin, generic.TemplateView):
+    template_name = 'rzemieslnicy/account.html'
+    login_url = '/login/'
+
+
+class CompanyListView(generic.View):
+    template_name = 'rzemieslnicy/companies_list.html'
+
+    def get(self, request, *args, **kwargs):
+        companies = Company.objects.filter(tradesman=self.request.user.tradesman)
+        return render(request, self.template_name, {'companies': companies})
+
+
+class AccountCompanyView(generic.DetailView):
+    model = Company
+    template_name = 'rzemieslnicy/company_view.html'
+    context_object_name = 'company'

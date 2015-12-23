@@ -7,7 +7,11 @@
     {% else %}
         <div class="collection">
             {% for institution in institutions %}
-                <a class="collection-item" href="{% url 'institution' institution.pk %}">Name: {{ institution.name }}</a>
+                <a class="collection-item" href="{% url 'institution' institution.pk %}">
+                    <h5>{{ institution.name }}</h5>
+                    <h6>{{ institution.address }}</h6>
+                    <h6>{{ institution.city.name }}</h6>
+                </a>
             {% endfor %}
         </div>
     {% endif %}

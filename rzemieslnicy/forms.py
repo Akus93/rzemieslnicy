@@ -68,12 +68,14 @@ class TradesmanCreationForm(UserCreationForm):
 
 
 class SearchForm(forms.Form):
-    search = forms.CharField(max_length=100, required=True)
+    search = forms.CharField(max_length=100, required=True,
+                             widget=forms.TextInput(attrs={'type': "search"}))
 
 
 class ContactForm(forms.Form):
     subject = forms.CharField(required=True, max_length=100, label='Tytuł')
-    message = forms.CharField(required=True, widget=forms.Textarea(attrs={'class': "materialize-textarea"}), max_length=500, label='Wiadomość')
+    message = forms.CharField(required=True, widget=forms.Textarea(attrs={'class': "materialize-textarea"}),
+                              max_length=500, label='Wiadomość')
     email = forms.EmailField(required=True, max_length=150, label='Twój adres email')
 
     def send(self):
