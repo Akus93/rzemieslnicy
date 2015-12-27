@@ -1,11 +1,68 @@
 {% extends 'rzemieslnicy/base.html' %}
 
 {% block content %}
+    {% load staticfiles %}
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="{% static 'js/materialize.js'%}"></script>
+    <script src="{% static 'js/init.js' %}"></script>
 
     <form action="" method="post">{% csrf_token %}
-        {{ form.as_p }}
-        <br>
+          {{ form.non_field_errors }}
+
+            {{ form.name.errors }}
+            {{ form.name.label_tag }}
+            {{ form.name }}
+
+            {{ form.area.errors }}
+            <div class="input-field col s12">
+                {{ form.area }}
+                {{ form.area.label_tag }}
+            </div>
+
+            {{ form.address.errors }}
+            {{ form.address.label_tag }}
+            {{ form.address }}
+
+            {{ form.city.errors }}
+            <div class="input-field col s12">
+            {{ form.city }}
+            {{ form.city.label_tag }}
+            </div>
+
+            {{ form.postal_code.errors }}
+            {{ form.postal_code.label_tag }}
+            {{ form.postal_code }}
+
+            {{ form.phone.errors }}
+            {{ form.phone.label_tag }}
+            {{ form.phone }}
+
+            {{ form.email.errors }}
+            {{ form.email.label_tag }}
+            {{ form.email }}
+
+            {{ form.site.errors }}
+            {{ form.site.label_tag }}
+            {{ form.site }}
+
+            {{ form.short_description.errors }}
+            {{ form.short_description.label_tag }}
+            {{ form.short_description }}
+
+            {{ form.long_description.errors }}
+            <div class="input-field col s12">
+                {{ form.long_description.label_tag }}
+                {{ form.long_description }}
+            </div>
+
+        <br><br>
         <button class="waves-effect waves-light btn light-blue lighten-1" name="form" type="submit" >Dodaj zakład</button>
     </form>
+
+    <script>
+        $(document).ready(function() {
+            $('select').material_select();
+        });
+    </script>
 
 {% endblock content %}

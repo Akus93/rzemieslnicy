@@ -16,6 +16,7 @@ urlpatterns = [
     url(r'^account/$', views.AccountView.as_view(), name='account'),
     url(r'^account/company/(?P<pk>[0-9]+)/$', views.AccountCompanyView.as_view(), name='account_company'),
     url(r'^account/company/create/$', views.CompanyCreateView.as_view(), name='create_company'),
-    url(r'^account/company/institution/create/$', views.InstitutionCreateView.as_view(), name='create_institution'),
+    url(r'^account/company/(?P<pk>[0-9]+)/institution/create/$', views.InstitutionCreateView.as_view(),
+        name='create_institution'),
 
 ]

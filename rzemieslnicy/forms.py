@@ -5,7 +5,7 @@ from django.contrib.auth import password_validation
 
 from django.core.mail import send_mail
 
-from .models import Tradesman, Company, Institution
+from .models import Tradesman, Company, Institution, Area, City
 
 
 class UserCreationForm(forms.ModelForm):
@@ -108,6 +108,26 @@ class InstitutionCreationForm(forms.ModelForm):
 
     class Meta:
         model = Institution
-        fields = ['name', 'area', 'address', 'postal_code', 'city', 'phone', 'email', 'site', 'short_description',
-                  'long_description']
+        exclude = ['company']
 
+    name = forms.CharField(max_length=128)
+    area = forms.ModelChoiceField(queryset=Area.objects.all(), initial=0)
+    address = forms.CharField(max_length=256)
+    city = forms.ModelChoiceField(queryset=City.objects.all(), initial=0)
+    postal_code = forms.CharField(max_length=6)
+    phone = forms.CharField(max_length=15)
+    email = forms.EmailField()
+    site = forms.URLField(required=False)
+    short_description = forms.CharField(max_length=100)
+    long_description = forms.CharField(widget=forms.Textarea(attrs={'class': "materialize-textarea"}), max_length=500)
+
+    def __init__(self, *args, **kwargs):
+        self.company = kwargs.pop('company', None)
+        super(InstitutionCreationForm, self).__init__(*args, **kwargs)
+
+    def save(self, commit=True):
+        institution = super(InstitutionCreationForm, self).save(commit=False)
+        institution.company = Company.objects.get(pk=self.company)
+        if commit:
+            institution.save()
+        return institution

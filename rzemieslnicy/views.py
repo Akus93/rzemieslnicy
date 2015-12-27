@@ -121,18 +121,29 @@ class CompanyCreateView(generic.View):
             return HttpResponseRedirect('/account/')
         return render(request, self.template_name, {'form': form})
 
-# TODO ogarnac dodawanie zakladu!
+
 class InstitutionCreateView(generic.View):
     form_class = InstitutionCreationForm
     template_name = 'rzemieslnicy/institution_create.html'
 
+    def is_owner(self, request):
+        pk = self.kwargs['pk']
+        indexes = [company.id for company in request.user.tradesman.company_set.all()]
+        if int(pk) in indexes:
+            return True
+        return False
+
     def get(self, request, *args, **kwargs):
-        form = self.form_class()
-        return render(request, self.template_name, {'form': form})
+        if self.is_owner(request):
+            form = self.form_class()
+            return render(request, self.template_name, {'form': form})
+        return HttpResponseRedirect('/account/')
 
     def post(self, request, *args, **kwargs):
-        form = self.form_class(request.POST)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect('/account/')
-        return render(request, self.template_name, {'form': form})
+        if self.is_owner(request):
+            form = self.form_class(request.POST, company=self.kwargs['pk'])
+            if form.is_valid():
+                form.save()
+                return HttpResponseRedirect('/account/')
+            return render(request, self.template_name, {'form': form})
+        return HttpResponseRedirect('/account/')
