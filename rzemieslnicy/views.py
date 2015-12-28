@@ -7,7 +7,7 @@ from django.template import RequestContext
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
-from .models import Institution, Company
+from .models import Institution, Company, Craft
 
 from .services import get_institutions
 
@@ -147,3 +147,71 @@ class InstitutionCreateView(generic.View):
                 return HttpResponseRedirect('/account/')
             return render(request, self.template_name, {'form': form})
         return HttpResponseRedirect('/account/')
+
+
+class InstitutionPanelView(generic.View):
+    template_name = 'rzemieslnicy/institution_panel.html'
+
+    def is_owner(self, request):
+        company_pk = int(self.kwargs['company_pk'])
+        companies = request.user.tradesman.company_set.all()
+        companies_id = [company.id for company in companies]
+        institution_pk = int(self.kwargs['institution_pk'])
+        if company_pk in companies_id:
+            company = Company.objects.get(pk=company_pk)
+            instituitons_id = [institution.id for institution in company.institution_set.all()]
+            if institution_pk in instituitons_id:
+                return True
+        return False
+
+    def get(self, request, *args, **kwargs):
+        if self.is_owner(request):
+            pk = int(self.kwargs['institution_pk'])
+            instituiton = Institution.objects.get(pk=pk)
+            return render(request, self.template_name, {'institution': instituiton})
+        return HttpResponseRedirect('/account/')
+
+
+class CraftsEditView(generic.View):
+    template_name = 'rzemieslnicy/crafts_edit.html'
+
+    def is_owner(self, request):
+        company_pk = int(self.kwargs['company_pk'])
+        companies = request.user.tradesman.company_set.all()
+        companies_id = [company.id for company in companies]
+        institution_pk = int(self.kwargs['institution_pk'])
+        if company_pk in companies_id:
+            company = Company.objects.get(pk=company_pk)
+            instituitons_id = [institution.id for institution in company.institution_set.all()]
+            if institution_pk in instituitons_id:
+                return True
+        return False
+
+    def get(self, request, *args, **kwargs):
+        if self.is_owner(request):
+            crafts = Craft.objects.all().order_by('name')
+            institution = Institution.objects.get(pk=int(self.kwargs['institution_pk']))
+            checked = [ins_craft.craft for ins_craft in institution.institutioncraft_set.all()]
+            return render(request, self.template_name, {'crafts': crafts, 'checked': checked})
+        return HttpResponseRedirect('/account/')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,32 @@
+{% extends 'rzemieslnicy/base.html' %}
+
+{% block content %}
+
+    <p>Institution panel for <b>{{ institution.name }}</b></p>
+    <h1>Details:</h1>
+    <p>Company name: {{ institution.company.name }}</p>
+    <p>Area: {{ institution.area.name }}</p>
+    <p>Address: {{ institution.address }}</p>
+    <p>City: {{ institution.city.name }}</p>
+    <p>Postal code: {{ institution.postal_code }}</p>
+    <p>Phone: {{ institution.phone }}</p>
+    <p>Email: {{ institution.email }}</p>
+    <p>Site: {{ institution.site }}</p>
+    <p>Short description: {{ institution.short_description }}</p>
+    <p>Long description: {{ institution.long_description }}</p>
+
+    <h5>Crafts:</h5>
+    {% with ins_crafts=institution.institutioncraft_set.all %}
+        {% for ins_craft in ins_crafts %}
+            <div class="chip">
+                {{ ins_craft.craft.name }}
+            </div>
+        {% endfor %}
+    {% endwith %}
+        <a class="btn-floating btn-flat waves-effect waves-light light-blue tooltipped" data-position="top"
+           data-delay="50" data-tooltip="Dodaj" href="{% url 'crafts_edit' institution.company.id institution.id %}">
+            <i class="material-icons">add</i>
+        </a>
+
+
+{% endblock content %}

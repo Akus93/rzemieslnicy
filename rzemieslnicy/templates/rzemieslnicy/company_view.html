@@ -21,7 +21,7 @@
             <p>Yours institutions:</p>
             <div class="collection">
                 {% for institution in company.institution_set.all %}
-                    <a class="collection-item" href="{% url 'institution' institution.pk %}">Name: {{ institution.name }}</a>
+                    <a class="collection-item" href="{% url 'institution_panel' company.id institution.id %}">Name: {{ institution.name }}</a>
                 {% endfor %}
             </div>
             <div class="right-align">

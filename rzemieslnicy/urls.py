@@ -18,5 +18,8 @@ urlpatterns = [
     url(r'^account/company/create/$', views.CompanyCreateView.as_view(), name='create_company'),
     url(r'^account/company/(?P<pk>[0-9]+)/institution/create/$', views.InstitutionCreateView.as_view(),
         name='create_institution'),
-
+    url(r'^account/company/(?P<company_pk>[0-9]+)/institution/(?P<institution_pk>[0-9]+)/$',
+        views.InstitutionPanelView.as_view(), name='institution_panel'),
+    url(r'^account/company/(?P<company_pk>[0-9]+)/institution/(?P<institution_pk>[0-9]+)/crafts/edit/$',
+        views.CraftsEditView.as_view(), name='crafts_edit'),
 ]

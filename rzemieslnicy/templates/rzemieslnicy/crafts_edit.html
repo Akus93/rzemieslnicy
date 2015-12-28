@@ -1,0 +1,15 @@
+{% extends 'rzemieslnicy/base.html' %}
+
+{% block content %}
+
+    <form action="#" method="post">{% csrf_token %}
+        {% for craft in crafts %}
+            <p>
+              <input type="checkbox" {% if craft in checked %} } checked="checked" {% endif %} id="{{ craft.name }}_id" />
+              <label for="{{ craft.name }}_id">{{ craft.name }}</label>
+            </p>
+        {% endfor %}
+    <br>
+    <button class="waves-effect waves-light btn light-blue lighten-1" name="form" type="submit" >Zatwierdź</button>
+    </form>
+{% endblock content %}
