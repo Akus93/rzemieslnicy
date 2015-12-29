@@ -9,7 +9,7 @@ from django.shortcuts import render
 
 from .models import Institution, Company, Craft
 
-from .services import get_institutions
+from .services import get_institutions, update_crafts
 
 
 class IndexView(generic.View):
@@ -195,8 +195,13 @@ class CraftsEditView(generic.View):
             return render(request, self.template_name, {'crafts': crafts, 'checked': checked})
         return HttpResponseRedirect('/account/')
 
-
-
+    def post(self, request, *args, **kwargs):
+        if self.is_owner(request):
+            crafts = list(map(int, request.POST.getlist('crafts')))
+            all_crafts = [craft.id for craft in Craft.objects.all()]
+            if set(crafts).issubset(set(all_crafts)):
+                update_crafts(self.kwargs['institution_pk'], crafts)
+        return HttpResponseRedirect('/account/')
 
 
 

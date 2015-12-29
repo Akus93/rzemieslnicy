@@ -2,7 +2,7 @@ from operator import and_
 from django.db.models import Q
 from functools import reduce
 
-from .models import Institution, City, Province, Craft
+from .models import Institution, City, Province, Craft, InstitutionCraft
 
 
 def pl_to_en(word):
@@ -54,7 +54,19 @@ def get_institutions(search):
     return results
 
 
+def remove_all_crafts(institution):
+    old_crafts = [craft for craft in InstitutionCraft.objects.filter(institution=institution)]
+    for old_craft in old_crafts:
+        old_craft.delete()
 
+
+def update_crafts(institution, crafts):
+    remove_all_crafts(institution)
+    institution_obj = Institution.objects.get(pk=institution)
+    for craft in crafts:
+        craft_obj = Craft.objects.get(pk=craft)
+        new_craft = InstitutionCraft(institution=institution_obj, craft=craft_obj)
+        new_craft.save()
 
 
 
