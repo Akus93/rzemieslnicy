@@ -2,17 +2,50 @@
 
 {% block content %}
 
-<p>You're looking at institution <b>{{ institution.name }}</b></p>
-<h1>Details:</h1>
-<p>Company name: {{ institution.company.name }}</p>
-<p>Area: {{ institution.area.name }}</p>
-<p>Address: {{ institution.address }}</p>
-<p>City: {{ institution.city.name }}</p>
-<p>Postal code: {{ institution.postal_code }}</p>
-<p>Phone: {{ institution.phone }}</p>
-<p>Email: {{ institution.email }}</p>
-<p>Site: {{ institution.site }}</p>
-<p>Short description: {{ institution.short_description }}</p>
-<p>Long description: {{ institution.long_description }}</p>
+    {% load staticfiles %}
+    <script src="{% static 'js/rating.js' %}"></script>
+
+    <p>You're looking at institution <b>{{ institution.name }}</b></p>
+    <h1>Details:</h1>
+    <p>Company name: {{ institution.company.name }}</p>
+    <p>Area: {{ institution.area.name }}</p>
+    <p>Address: {{ institution.address }}</p>
+    <p>City: {{ institution.city.name }}</p>
+    <p>Postal code: {{ institution.postal_code }}</p>
+    <p>Phone: {{ institution.phone }}</p>
+    <p>Email: {{ institution.email }}</p>
+    <p>Site: {{ institution.site }}</p>
+    <p>Short description: {{ institution.short_description }}</p>
+    <p>Long description: {{ institution.long_description }}</p>
+
+    <br>
+    <h5>Opinie:</h5>
+    <br>
+
+    {% for opinion in institution.opinion_set.all %}
+        <ul class="collection">
+            <li class="collection-item avatar">
+                <i class="material-icons circle green">comment</i>
+                <span class="title">
+                    <div data-star-value="4" class="rating" id="rate_{{ opinion.id }}"></div>
+                </span>
+                <p>
+                    {{ opinion.text }}<br>
+                    <span class="thin">Autor: {{ opinion.user.get_full_name }}</span>
+                </p>
+                <a href="" class="secondary-content tooltipped" data-position="top" data-delay="50" data-tooltip="Zgłoś opinie">
+                    <i class="material-icons">report</i>
+                </a>
+            </li>
+        </ul>
+    {% endfor %}
+
+  <script>
+        $(document).ready(function(){
+            $('.rating').each(function(){
+                $(this).addRating();
+            })
+        });
+    </script>
 
 {% endblock content %}
