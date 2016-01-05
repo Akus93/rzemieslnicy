@@ -204,6 +204,22 @@ class CraftsEditView(generic.View):
         return HttpResponseRedirect('/account/')
 
 
+class OpinionCreate(generic.View):
+    template_name = 'rzemieslnicy/opinion_create.html'
+    form_class = OpinionCreateForm
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        institution_pk = self.kwargs['pk']
+        user_pk = request.user.id
+        form = self.form_class(request.POST, institution=institution_pk, user=user_pk)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/institution/%s' % institution_pk)
+        return render(request, self.template_name, {'form': form})
 
 
 

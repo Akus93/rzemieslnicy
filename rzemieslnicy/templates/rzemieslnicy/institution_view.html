@@ -22,17 +22,20 @@
     <h5>Opinie:</h5>
     <br>
 
+     Dodaj opinie   <a href="{% url 'opinion_create' institution.id %}" class="btn-floating btn waves-effect waves-light green">
+                        <i class="material-icons">add</i>
+                    </a>
+
     {% for opinion in institution.opinion_set.all %}
         <ul class="collection">
             <li class="collection-item avatar">
                 <i class="material-icons circle green">comment</i>
                 <span class="title">
-                    <div data-star-value="4" class="rating" id="rate_{{ opinion.id }}"></div>
+                    <div data-star-value="3" class="rating" id="rate_{{ opinion.id }}"></div>
                 </span>
-                <p>
-                    {{ opinion.text }}<br>
-                    <span class="thin">Autor: {{ opinion.user.get_full_name }}</span>
-                </p>
+                <pre>{{ opinion.text }}</pre>
+                <br>
+                <span class="thin">Autor: {{ opinion.user.get_full_name }}</span>
                 <a href="" class="secondary-content tooltipped" data-position="top" data-delay="50" data-tooltip="Zgłoś opinie">
                     <i class="material-icons">report</i>
                 </a>

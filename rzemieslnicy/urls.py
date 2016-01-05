@@ -22,4 +22,6 @@ urlpatterns = [
         views.InstitutionPanelView.as_view(), name='institution_panel'),
     url(r'^account/company/(?P<company_pk>[0-9]+)/institution/(?P<institution_pk>[0-9]+)/crafts/edit/$',
         views.CraftsEditView.as_view(), name='crafts_edit'),
+    url(r'^institution/(?P<pk>[0-9]+)/opinion/create/$', views.OpinionCreate.as_view(), name='opinion_create'),
+
 ]

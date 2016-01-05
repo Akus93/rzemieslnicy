@@ -5,7 +5,7 @@ from django.contrib.auth import password_validation
 
 from django.core.mail import send_mail
 
-from .models import Tradesman, Company, Institution, Area, City
+from .models import Tradesman, Company, Institution, Area, City, Opinion
 
 
 class UserCreationForm(forms.ModelForm):
@@ -131,3 +131,38 @@ class InstitutionCreationForm(forms.ModelForm):
         if commit:
             institution.save()
         return institution
+
+
+class OpinionCreateForm(forms.ModelForm):
+
+    class Meta:
+        model = Opinion
+        exclude = ['user', 'institution', 'is_visible', 'is_positive']
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        self.institution = kwargs.pop('institution', None)
+        super(OpinionCreateForm, self).__init__(*args, **kwargs)
+
+    def save(self, commit=True):
+        opinion = super(OpinionCreateForm, self).save(commit=False)
+        opinion.user = User.objects.get(pk=self.user)
+        opinion.institution = Institution.objects.get(pk=self.institution)
+        if commit:
+            opinion.save()
+        return opinion
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
