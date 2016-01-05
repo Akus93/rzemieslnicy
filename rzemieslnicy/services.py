@@ -8,8 +8,6 @@ from .models import Institution, City, Province, Craft, InstitutionCraft
 def pl_to_en(word):
     return word.translate(str.maketrans("ąćęłńóśżźĄĆĘŁŃÓŚŻŹ", "acelnoszzACELNOSZZ"))
 
-# TODO WYSZUKIWANIE PO WOJEWODZTWIE odmiana wojewodztwa
-
 
 def get_search_context(search):
     words = search.split()
@@ -23,8 +21,8 @@ def get_search_context(search):
         word = pl_to_en(word)
         if City.objects.filter(name=word.capitalize()).exists():
             context['city'].append(word.capitalize())
-        elif Province.objects.filter(name=word.capitalize()).exists():
-            context['province'].append(word.capitalize())
+        elif Province.objects.filter(name__startswith=word[:5].capitalize()).exists():
+            context['province'].append(word[:5].capitalize())
         elif Craft.objects.filter(name=word.capitalize()).exists():
             context['craft'].append(word.capitalize())
         elif Institution.objects.filter(name__icontains=word).exists():
@@ -39,7 +37,8 @@ def get_institutions(search):
         results = Institution.objects.filter(city__name__in=context['city'])
     if len(context['province']):
         if results is None:
-            results = Institution.objects.filter(city__province__name__in=context['province'])
+            query = reduce(and_, (Q(city__province__name__startswith=x) for x in context['province']))
+            results = Institution.objects.filter(query)
     if len(context['craft']):
         if results is not None:
             results = results.filter(institutioncraft__craft__name__in=context['craft'])
