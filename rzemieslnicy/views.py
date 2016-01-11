@@ -204,7 +204,7 @@ class CraftsEditView(generic.View):
         return HttpResponseRedirect('/account/')
 
 
-class OpinionCreate(generic.View):
+class OpinionCreateView(generic.View):
     template_name = 'rzemieslnicy/opinion_create.html'
     form_class = OpinionCreateForm
 
@@ -215,12 +215,33 @@ class OpinionCreate(generic.View):
     def post(self, request, *args, **kwargs):
         institution_pk = self.kwargs['pk']
         user_pk = request.user.id
-        form = self.form_class(request.POST, institution=institution_pk, user=user_pk)
+        rating = int(request.POST.get("rating", ""))
+        form = self.form_class(request.POST, institution=institution_pk, user=user_pk, rating=rating)
         if form.is_valid():
             form.save()
             return HttpResponseRedirect('/institution/%s' % institution_pk)
         return render(request, self.template_name, {'form': form})
 
+
+class OpinionReportView(generic.View):
+    template_name = 'rzemieslnicy/opinion_report.html'
+    form_class = OpinionReportForm
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class()
+        opinion_pk = self.kwargs['opinion_pk']
+        opinion = Opinion.objects.get(id=opinion_pk)
+        return render(request, self.template_name, {'form': form, 'opinion': opinion})
+
+    def post(self, request, *args, **kwargs):
+        institution_pk = self.kwargs['institution_pk']
+        opinion_pk = self.kwargs['opinion_pk']
+        user_pk = request.user.id
+        form = self.form_class(request.POST, opinion=opinion_pk, user=user_pk)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/institution/%s' % institution_pk)
+        return render(request, self.template_name, {'form': form})
 
 
 

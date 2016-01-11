@@ -5,7 +5,7 @@ from django.contrib.auth import password_validation
 
 from django.core.mail import send_mail
 
-from .models import Tradesman, Company, Institution, Area, City, Opinion
+from .models import Tradesman, Company, Institution, Area, City, Opinion, ReportedOpinion
 
 
 class UserCreationForm(forms.ModelForm):
@@ -137,22 +137,42 @@ class OpinionCreateForm(forms.ModelForm):
 
     class Meta:
         model = Opinion
-        exclude = ['user', 'institution', 'is_visible', 'is_positive']
+        exclude = ['user', 'institution', 'is_visible', 'is_positive', 'rate']
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         self.institution = kwargs.pop('institution', None)
+        self.rate = kwargs.pop('rating', None)
         super(OpinionCreateForm, self).__init__(*args, **kwargs)
 
     def save(self, commit=True):
         opinion = super(OpinionCreateForm, self).save(commit=False)
         opinion.user = User.objects.get(pk=self.user)
+        opinion.rate = self.rate
         opinion.institution = Institution.objects.get(pk=self.institution)
         if commit:
             opinion.save()
         return opinion
 
 
+class OpinionReportForm(forms.ModelForm):
+
+    class Meta:
+        model = ReportedOpinion
+        fields = ['reason']
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        self.opinion = kwargs.pop('opinion', None)
+        super(OpinionReportForm, self).__init__(*args, **kwargs)
+
+    def save(self, commit=True):
+        reported_opinion = super(OpinionReportForm, self).save(commit=False)
+        reported_opinion.user = User.objects.get(pk=self.user)
+        reported_opinion.opinion = Opinion.objects.get(pk=self.opinion)
+        if commit:
+            reported_opinion.save()
+        return reported_opinion
 
 
 

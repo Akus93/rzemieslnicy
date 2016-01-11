@@ -3,7 +3,7 @@
 {% block content %}
 
     {% load staticfiles %}
-    <script src="{% static 'js/rating.js' %}"></script>
+    <script src="{% static 'js/display_rating.js' %}"></script>
 
     <p>You're looking at institution <b>{{ institution.name }}</b></p>
     <h1>Details:</h1>
@@ -27,20 +27,22 @@
                     </a>
 
     {% for opinion in institution.opinion_set.all %}
-        <ul class="collection">
-            <li class="collection-item avatar">
-                <i class="material-icons circle green">comment</i>
-                <span class="title">
-                    <div data-star-value="3" class="rating" id="rate_{{ opinion.id }}"></div>
-                </span>
-                <pre>{{ opinion.text }}</pre>
-                <br>
-                <span class="thin">Autor: {{ opinion.user.get_full_name }}</span>
-                <a href="" class="secondary-content tooltipped" data-position="top" data-delay="50" data-tooltip="Zgłoś opinie">
-                    <i class="material-icons">report</i>
-                </a>
-            </li>
-        </ul>
+        {% if opinion.is_visible %}
+            <ul class="collection">
+                <li class="collection-item avatar">
+                    <i class="material-icons circle green">comment</i>
+                    <span class="title">
+                        <div data-star-value="{{ opinion.rate }}" class="rating" id="rate_{{ opinion.id }}"></div>
+                    </span>
+                    <pre>{{ opinion.text }}</pre>
+                    <br>
+                    <span class="thin">Autor: {{ opinion.user.get_full_name }}</span>
+                    <a href="{% url 'opinion_report' institution.id opinion.id %}" class="secondary-content tooltipped" data-position="top" data-delay="50" data-tooltip="Zgłoś opinie">
+                        <i class="material-icons">report</i>
+                    </a>
+                </li>
+            </ul>
+        {% endif %}
     {% endfor %}
 
   <script>

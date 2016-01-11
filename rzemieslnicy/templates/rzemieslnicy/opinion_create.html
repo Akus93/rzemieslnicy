@@ -2,10 +2,22 @@
 
 {% block content %}
 
+    {% load staticfiles %}
+    <script src="{% static 'js/add_rating.js' %}"></script>
+
     <form action="" method="post">{% csrf_token %}
+        <br>
+        Ocena: <div class="rating"></div>
         {{ form.as_p }}
         <br>
         <button class="waves-effect waves-light btn light-blue lighten-1" name="form" type="submit" >Dodaj opinie</button>
     </form>
+
+    <script>
+        $(document).ready(function(){
+            $('.rating').addRating();
+        })
+    </script>
+
 
 {% endblock content %}

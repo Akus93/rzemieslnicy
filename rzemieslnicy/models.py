@@ -101,8 +101,8 @@ class Rating(models.Model):
 class Opinion(models.Model):
     user = models.ForeignKey(User)
     institution = models.ForeignKey(Institution)
+    rate = models.SmallIntegerField(choices=[(1, 1), (2, 2), (3, 3), (4, 4), (5, 5)])
     text = models.TextField(max_length=500)
-    is_positive = models.BooleanField(default=True)
     is_visible = models.BooleanField(default=True)
 
     def __str__(self):
