@@ -14,18 +14,19 @@
             <p>Miasto: {{ company.city }}</p>
             <p>Telefon: {{ company.phone }}</p>
             <p>Email: {{ company.email }}</p>
-            <p>Strona www: <a href='{{ company.site }}'>{{ company.site }}</a></p>
+            <p>Strona WWW: <a href='{{ company.site }}'>{{ company.site }}</a></p>
         </div>
 
         <div class="col s6">
-            <p>Yours institutions:</p>
+            <h5>Twoje zakłady:</h5>
             <div class="collection">
                 {% for institution in company.institution_set.all %}
-                    <a class="collection-item" href="{% url 'institution_panel' company.id institution.id %}">Name: {{ institution.name }}</a>
+                    <a class="collection-item" href="{% url 'institution_panel' company.id institution.id %}">{{ institution.name }}</a>
                 {% endfor %}
             </div>
             <div class="right-align">
-                <a class="btn-floating btn waves-effect waves-light light-blue" href="{% url 'create_institution' company.id %}">
+                <a class="btn-floating btn waves-effect waves-light light-blue tooltipped" data-position="top"
+                    data-delay="50" data-tooltip="Dodaj zakład" href="{% url 'create_institution' company.id %}">
                     <i class="material-icons">add</i>
                 </a>
             </div>

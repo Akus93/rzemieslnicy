@@ -95,6 +95,12 @@ class CompanyCreationForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.tradesman = kwargs.pop('tradesman', None)
         super(CompanyCreationForm, self).__init__(*args, **kwargs)
+        self.fields['name'].label = 'Nazwa'
+        self.fields['address'].label = 'Adres'
+        self.fields['postal_code'].label = 'Kod pocztowy'
+        self.fields['city'].label = 'Miasto'
+        self.fields['phone'].label = 'Telefon'
+        self.fields['site'].label = 'Strona WWW'
 
     def save(self, commit=True):
         company = super(CompanyCreationForm, self).save(commit=False)
@@ -108,7 +114,7 @@ class InstitutionCreationForm(forms.ModelForm):
 
     class Meta:
         model = Institution
-        exclude = ['company']
+        exclude = ['company', 'rate']
 
     name = forms.CharField(max_length=128)
     area = forms.ModelChoiceField(queryset=Area.objects.all(), initial=0)
@@ -124,10 +130,20 @@ class InstitutionCreationForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.company = kwargs.pop('company', None)
         super(InstitutionCreationForm, self).__init__(*args, **kwargs)
+        self.fields['name'].label = 'Nazwa'
+        self.fields['address'].label = 'Adres'
+        self.fields['postal_code'].label = 'Kod pocztowy'
+        self.fields['city'].label = 'Miasto'
+        self.fields['phone'].label = 'Telefon'
+        self.fields['site'].label = 'Strona WWW'
+        self.fields['short_description'].label = 'Krótki opis'
+        self.fields['long_description'].label = 'Długi opis'
+        self.fields['area'].label = 'Zasięg'
 
     def save(self, commit=True):
         institution = super(InstitutionCreationForm, self).save(commit=False)
         institution.company = Company.objects.get(pk=self.company)
+        institution.rate = 3.00
         if commit:
             institution.save()
         return institution

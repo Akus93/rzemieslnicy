@@ -5,18 +5,16 @@
     {% load staticfiles %}
     <script src="{% static 'js/display_rating.js' %}"></script>
 
-    <p>You're looking at institution <b>{{ institution.name }}</b></p>
-    <h1>Details:</h1>
-    <p>Company name: {{ institution.company.name }}</p>
-    <p>Area: {{ institution.area.name }}</p>
-    <p>Address: {{ institution.address }}</p>
-    <p>City: {{ institution.city.name }}</p>
-    <p>Postal code: {{ institution.postal_code }}</p>
-    <p>Phone: {{ institution.phone }}</p>
+    <h5>{{ institution.name }}</h5>
+    <p>Firma: {{ institution.company.name }}</p>
+    <p>Adres: {{ institution.address }}</p>
+    <p>Miasto: {{ institution.city.name }}</p>
+    <p>Kod pocztowy: {{ institution.postal_code }}</p>
+    <p>Telefon: {{ institution.phone }}</p>
     <p>Email: {{ institution.email }}</p>
-    <p>Site: {{ institution.site }}</p>
-    <p>Short description: {{ institution.short_description }}</p>
-    <p>Long description: {{ institution.long_description }}</p>
+    <p>Strona WWW: <a href='{{ institution.site }}'>{{ institution.site }}</a></p>
+    <p>Któtki opis: {{ institution.short_description }}</p>
+    <p>Długi opis: <blockquote><pre>{{ institution.long_description }}</pre></blockquote></p>
 
     <br>
     <h5>Opinie:</h5>
@@ -25,7 +23,7 @@
      Dodaj opinie   <a href="{% url 'opinion_create' institution.id %}" class="btn-floating btn waves-effect waves-light green">
                         <i class="material-icons">add</i>
                     </a>
-
+                    <br><br>
     {% for opinion in institution.opinion_set.all %}
         {% if opinion.is_visible %}
             <ul class="collection">
@@ -35,7 +33,6 @@
                         <div data-star-value="{{ opinion.rate }}" class="rating" id="rate_{{ opinion.id }}"></div>
                     </span>
                     <pre>{{ opinion.text }}</pre>
-                    <br>
                     <span class="thin">Autor: {{ opinion.user.get_full_name }}</span>
                     <a href="{% url 'opinion_report' institution.id opinion.id %}" class="secondary-content tooltipped" data-position="top" data-delay="50" data-tooltip="Zgłoś opinie">
                         <i class="material-icons">report</i>

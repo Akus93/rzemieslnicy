@@ -6,13 +6,13 @@
 
         <div class="col s6">
             <h5>Twoje konto:</h5>
-            <p>Username: {{ user.get_username }}</p>
+            <p>Nazwa użytkownika: {{ user.get_username }}</p>
             <p>Imie: {{ user.first_name }}</p>
             <p>Nazwisko: {{ user.last_name }}</p>
-            <p>Data utworzenia konta: {{ user.date_joined }}</p>
             {% if user.tradesman %}
                 <p>NIP: {{ user.tradesman.NIP }}</p>
             {% endif %}
+            <p>Data utworzenia konta: {{ user.date_joined }}</p>
         </div>
 
         <div class="col s6">
@@ -25,7 +25,8 @@
                     {% endfor %}
                 </div>
                 <div class="right-align">
-                    <a class="btn-floating btn waves-effect waves-light light-blue" href="{% url 'create_company' %}">
+                    <a class="btn-floating btn waves-effect waves-light light-blue tooltipped" data-position="top"
+                       data-delay="50" data-tooltip="Dodaj firmę" href="{% url 'create_company' %}">
                         <i class="material-icons">add</i>
                     </a>
                 </div>

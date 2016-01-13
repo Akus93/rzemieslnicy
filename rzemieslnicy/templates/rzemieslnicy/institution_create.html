@@ -6,8 +6,12 @@
     <script src="{% static 'js/materialize.js'%}"></script>
     <script src="{% static 'js/init.js' %}"></script>
 
-    <form action="" method="post">{% csrf_token %}
-          {{ form.non_field_errors }}
+    <div class="card-panel">
+        <h5 class="thin">Dodaj zakład:</h5>
+        <br>
+        <form action="" method="post">{% csrf_token %}
+
+            {{ form.non_field_errors }}
 
             {{ form.name.errors }}
             {{ form.name.label_tag }}
@@ -55,9 +59,10 @@
                 {{ form.long_description }}
             </div>
 
-        <br><br>
-        <button class="waves-effect waves-light btn light-blue lighten-1" name="form" type="submit" >Dodaj zakład</button>
-    </form>
+            <br><br>
+            <button class="waves-effect waves-light btn light-blue lighten-1" name="form" type="submit" >Dodaj zakład</button>
+        </form>
+    </div>
 
     <script>
         $(document).ready(function() {

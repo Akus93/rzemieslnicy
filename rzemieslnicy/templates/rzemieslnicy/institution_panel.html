@@ -2,36 +2,51 @@
 
 {% block content %}
 
-    <p>Institution panel for <b>{{ institution.name }}</b></p>
-    <h1>Details:</h1>
-    <p>Company name: {{ institution.company.name }}</p>
-    <p>Area: {{ institution.area.name }}</p>
-    <p>Address: {{ institution.address }}</p>
-    <p>City: {{ institution.city.name }}</p>
-    <p>Postal code: {{ institution.postal_code }}</p>
-    <p>Phone: {{ institution.phone }}</p>
-    <p>Email: {{ institution.email }}</p>
-    <p>Site: {{ institution.site }}</p>
-    <p>Short description: {{ institution.short_description }}</p>
-    <p>Long description: {{ institution.long_description }}</p>
+    <div class="row">
 
-    Dodaj płatną funkcję:
-    <a class="btn-floating btn-flat waves-effect waves-light light-blue" href="{% url 'service_add' institution.company.id institution.id %}">
-            <i class="material-icons">add</i>
-    </a>
+        <div class="col s6">
+            <h5>{{ institution.name }}</h5>
+            <p>Firma: {{ institution.company.name }}</p>
+            <p>Zasięg: {{ institution.area.name }}</p>
+            <p>Adres: {{ institution.address }}</p>
+            <p>Miasto: {{ institution.city.name }}</p>
+            <p>Kod pocztowy: {{ institution.postal_code }}</p>
+            <p>Telefon: {{ institution.phone }}</p>
+            <p>Email: {{ institution.email }}</p>
+            <p>Strona WWW: <a href='{{ institution.site }}'>{{ institution.site }}</a></p>
+            <p>Któtki opis: {{ institution.short_description }}</p>
+            <p>Długi opis: <blockquote><pre>{{ institution.long_description }}</pre></blockquote></p>
+        </div>
 
-    <h5>Crafts:</h5>
-    {% with ins_crafts=institution.institutioncraft_set.all %}
-        {% for ins_craft in ins_crafts %}
-            <div class="chip">
-                {{ ins_craft.craft.name }}
+        <div class="col s6">
+            <h5>Bonusy:</h5>
+            <div class="collection">
+                {% with services=institution.activeservice_set.all %}
+                    {% for service in services %}
+                        <a class="collection-item">{{ service.paid_service.name }} <br><i>Do końca: {{ service.days_to_end }}</i></a>
+                    {%  endfor %}
+                {% endwith %}
             </div>
-        {% endfor %}
-    {% endwith %}
-        <a class="btn-floating btn-flat waves-effect waves-light light-blue tooltipped" data-position="top"
-           data-delay="50" data-tooltip="Dodaj" href="{% url 'crafts_edit' institution.company.id institution.id %}">
-            <i class="material-icons">add</i>
-        </a>
+            <div class="right-align">
+                <a class="btn-floating btn-flat waves-effect waves-light light-blue tooltipped" data-position="top"
+                   data-delay="50" data-tooltip="Kup bonus" href="{% url 'service_add' institution.company.id institution.id %}">
+                        <i class="material-icons">add</i>
+                </a>
+            </div>
+            <h5>Specjalność:</h5>
+            {% with ins_crafts=institution.institutioncraft_set.all %}
+                {% for ins_craft in ins_crafts %}
+                    <div class="chip">
+                        {{ ins_craft.craft.name }}
+                    </div>
+                {% endfor %}
+            {% endwith %}
+                <a class="btn-floating btn-flat waves-effect waves-light light-blue tooltipped align-right" data-position="top"
+                   data-delay="50" data-tooltip="Dodaj specjalność" href="{% url 'crafts_edit' institution.company.id institution.id %}">
+                    <i class="material-icons">add</i>
+                </a>
+        </div>
 
+    </div>
 
 {% endblock content %}

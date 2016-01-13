@@ -1,5 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.timesince import timesince
+from datetime import datetime
+from django.utils.timezone import utc
 
 
 class Tradesman(models.Model):
@@ -140,3 +143,6 @@ class ActiveService(models.Model):
     paid_service = models.ForeignKey(PaidService)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
+
+    def days_to_end(self):
+        return timesince(datetime.now().replace(tzinfo=utc), self.end_date.replace(tzinfo=utc))

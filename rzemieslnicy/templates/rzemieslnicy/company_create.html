@@ -1,11 +1,13 @@
 {% extends 'rzemieslnicy/base.html' %}
 
 {% block content %}
-
-    <form action="" method="post">{% csrf_token %}
-        {{ form.as_p }}
+    <div class="card-panel">
+        <h5 class="thin">Dodaj firmę:</h5>
         <br>
-        <button class="waves-effect waves-light btn light-blue lighten-1" name="form" type="submit" >Dodaj firme</button>
-    </form>
-
+        <form action="" method="post">{% csrf_token %}
+            {{ form.as_p }}
+            <br>
+            <button class="waves-effect waves-light btn light-blue lighten-1" name="form" type="submit" >Dodaj firme</button>
+        </form>
+    </div>
 {% endblock content %}
