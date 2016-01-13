@@ -42,4 +42,6 @@ urlpatterns = [
     url(r'^institution/(?P<institution_pk>[0-9]+)/opinion/(?P<opinion_pk>[0-9]+)/report/$',
         views.OpinionReportView.as_view(), name='opinion_report'),
 
+    url(r'^account/company/(?P<company_pk>[0-9]+)/institution/(?P<institution_pk>[0-9]+)/services/add/$',
+        views.ServiceAddView.as_view(), name='service_add'),
 ]

@@ -15,6 +15,11 @@
     <p>Short description: {{ institution.short_description }}</p>
     <p>Long description: {{ institution.long_description }}</p>
 
+    Dodaj płatną funkcję:
+    <a class="btn-floating btn-flat waves-effect waves-light light-blue" href="{% url 'service_add' institution.company.id institution.id %}">
+            <i class="material-icons">add</i>
+    </a>
+
     <h5>Crafts:</h5>
     {% with ins_crafts=institution.institutioncraft_set.all %}
         {% for ins_craft in ins_crafts %}

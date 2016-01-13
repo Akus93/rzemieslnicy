@@ -79,9 +79,15 @@ class Institution(models.Model):
     site = models.URLField(null=True)
     short_description = models.CharField(max_length=100, null=True)
     long_description = models.TextField(max_length=500)
+    rate = models.DecimalField(max_digits=3, decimal_places=2, default=3.00)
 
     def __str__(self):
         return self.name
+
+    def is_awarded(self):
+        if self.activeservice_set.filter(paid_service__name='Wyróżnienie'):
+            return True
+        return False
 
 
 class InstitutionCraft(models.Model):
@@ -123,14 +129,14 @@ class PaidService(models.Model):
     name = models.CharField(max_length=50)
     price = models.FloatField()
     description = models.TextField(max_length=150)
-    time = models.DurationField()
+    time = models.IntegerField()
 
     def __str__(self):
         return self.name
 
 
 class ActiveService(models.Model):
-    tradesman = models.ForeignKey(Tradesman)
+    institution = models.ForeignKey(Institution)
     paid_service = models.ForeignKey(PaidService)
     start_date = models.DateTimeField()
-    end_time = models.DateTimeField()
+    end_date = models.DateTimeField()

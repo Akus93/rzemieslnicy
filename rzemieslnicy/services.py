@@ -2,7 +2,8 @@ from operator import and_
 from django.db.models import Q
 from functools import reduce
 
-from .models import Institution, City, Province, Craft, InstitutionCraft
+from .models import Institution, City, Province, Craft, InstitutionCraft, Opinion
+from django.db.models import Avg
 
 
 def pl_to_en(word):
@@ -50,6 +51,7 @@ def get_institutions(search):
             results = Institution.objects.filter(query)
         else:
             results = results.filter(query)
+    results = results.order_by('-rate')
     return results
 
 
@@ -67,6 +69,13 @@ def update_crafts(institution, crafts):
         new_craft = InstitutionCraft(institution=institution_obj, craft=craft_obj)
         new_craft.save()
 
+
+# TODO gdy admin ukrywa opinie wywolanie tej funkcji
+def update_institution_rate(institution_pk):
+    institution = Institution.objects.get(id=institution_pk)
+    new_rate = Opinion.objects.filter(institution=institution).filter(is_visible=True).aggregate(Avg('rate')).get('rate__avg')
+    institution.rate = new_rate
+    institution.save()
 
 
 

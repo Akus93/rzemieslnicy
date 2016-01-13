@@ -9,7 +9,7 @@ from django.shortcuts import render
 
 from .models import Institution, Company, Craft
 
-from .services import get_institutions, update_crafts
+from .services import get_institutions, update_crafts, update_institution_rate
 
 
 class IndexView(generic.View):
@@ -219,6 +219,7 @@ class OpinionCreateView(generic.View):
         form = self.form_class(request.POST, institution=institution_pk, user=user_pk, rating=rating)
         if form.is_valid():
             form.save()
+            update_institution_rate(institution_pk)
             return HttpResponseRedirect('/institution/%s' % institution_pk)
         return render(request, self.template_name, {'form': form})
 
@@ -244,6 +245,34 @@ class OpinionReportView(generic.View):
         return render(request, self.template_name, {'form': form})
 
 
+class ServiceAddView(generic.View):
+    template_name = 'rzemieslnicy/service_add.html'
+    form_class = ServiceAddForm
+
+    def is_owner(self, request):
+        company_pk = int(self.kwargs['company_pk'])
+        companies = request.user.tradesman.company_set.all()
+        companies_id = [company.id for company in companies]
+        institution_pk = int(self.kwargs['institution_pk'])
+        if company_pk in companies_id:
+            company = Company.objects.get(pk=company_pk)
+            instituitons_id = [institution.id for institution in company.institution_set.all()]
+            if institution_pk in instituitons_id:
+                return True
+        return False
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        institution_pk = self.kwargs['institution_pk']
+        service_id = int(request.POST.get('paid_service'))
+        form = self.form_class(request.POST, institution=institution_pk, service=service_id)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/institution/%s' % institution_pk)
+        return render(request, self.template_name, {'form': form})
 
 
 

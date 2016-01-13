@@ -4,8 +4,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth import password_validation
 
 from django.core.mail import send_mail
-
-from .models import Tradesman, Company, Institution, Area, City, Opinion, ReportedOpinion
+from datetime import datetime, timedelta
+from .models import Tradesman, Company, Institution, Area, City, Opinion, ReportedOpinion, ActiveService, PaidService
 
 
 class UserCreationForm(forms.ModelForm):
@@ -174,6 +174,30 @@ class OpinionReportForm(forms.ModelForm):
             reported_opinion.save()
         return reported_opinion
 
+
+class ServiceAddForm(forms.ModelForm):
+
+    paid_service = forms.ModelChoiceField(queryset=PaidService.objects.all(), initial=0)
+
+    class Meta:
+        model = ActiveService
+        fields = ['paid_service']
+
+    def __init__(self, *args, **kwargs):
+        self.institution = kwargs.pop('institution', None)
+        self.service = kwargs.pop('service', None)
+        super(ServiceAddForm, self).__init__(*args, **kwargs)
+
+    def save(self, commit=True):
+        # service = super(ServiceAddForm(self).save(commit=False))
+        service = ActiveService()
+        service.institution = Institution.objects.get(pk=self.institution)
+        service.paid_service = PaidService.objects.get(pk=self.service)
+        service.start_date = datetime.now()
+        service.end_date = service.start_date + timedelta(days=service.paid_service.time)
+        if commit:
+            service.save()
+        return service
 
 
 

@@ -1,0 +1,28 @@
+{% extends 'rzemieslnicy/base.html' %}
+
+{% block content %}
+    {% load staticfiles %}
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="{% static 'js/materialize.js'%}"></script>
+    <script src="{% static 'js/init.js' %}"></script>
+
+    <form action="" method="post">{% csrf_token %}
+        {{ form.non_field_errors }}
+
+        {{ form.paid_service.errors }}
+        <div class="input-field col s12">
+            {{ form.paid_service }}
+            {{ form.paid_service.label_tag }}
+        </div>
+
+        <br><br><br>
+        <button class="waves-effect waves-light btn light-blue lighten-1" name="form" type="submit" >Aktywuj usługę</button>
+    </form>
+
+    <script>
+        $(document).ready(function() {
+            $('select').material_select();
+        });
+    </script>
+
+{% endblock content %}

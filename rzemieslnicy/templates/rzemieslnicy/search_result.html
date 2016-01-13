@@ -7,11 +7,14 @@
     {% else %}
         <div class="collection">
             {% for institution in institutions %}
-                <a class="collection-item" href="{% url 'institution' institution.pk %}">
+                <a class="collection-item {% if institution.is_awarded %}active{% endif %}"
+                   href="{% url 'institution' institution.pk %}">
                     <h5>{{ institution.name }}</h5>
                     <h6>{{ institution.address }}</h6>
                     <h6>{{ institution.city.name }}</h6>
+                    ocena: {{ institution.rate }}
                 </a>
+                    </b>
             {% endfor %}
         </div>
     {% endif %}
