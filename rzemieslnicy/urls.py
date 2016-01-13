@@ -8,8 +8,6 @@ urlpatterns = [
 
     url(r'^institution/(?P<pk>[0-9]+)/$', views.InstitutionView.as_view(), name='institution'),
 
-    url(r'^institutions/$', views.InstitutionListView.as_view(), name='institutions'),
-
     url(r'^signup/$', views.SignupView.as_view(), name='signup'),
 
     url(r'^success/$', views.SuccessView.as_view(), name='success'),
@@ -32,7 +30,7 @@ urlpatterns = [
         name='create_institution'),
 
     url(r'^account/company/(?P<company_pk>[0-9]+)/institution/(?P<institution_pk>[0-9]+)/$',
-        views.InstitutionPanelView.as_view(), name='institution_panel'),
+        views.AccountInstitutionView.as_view(), name='institution_panel'),
 
     url(r'^account/company/(?P<company_pk>[0-9]+)/institution/(?P<institution_pk>[0-9]+)/crafts/edit/$',
         views.CraftsEditView.as_view(), name='crafts_edit'),

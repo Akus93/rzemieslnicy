@@ -26,7 +26,6 @@ class IndexView(generic.View):
             search = form.cleaned_data['search']
             results = get_institutions(search)
             return render(request, 'rzemieslnicy/search_result.html', {'institutions': results})
-
         return render(request, self.template_name, {'form': form})
 
 
@@ -34,13 +33,6 @@ class InstitutionView(generic.DetailView):
     model = Institution
     template_name = 'rzemieslnicy/institution_view.html'
     context_object_name = 'institution'
-
-
-class InstitutionListView(generic.ListView):
-    model = Institution
-    queryset = Institution.objects.all()
-    context_object_name = 'institutions'
-    template_name = 'rzemieslnicy/institution_list.html'
 
 
 class SuccessView(generic.TemplateView):
@@ -149,7 +141,7 @@ class InstitutionCreateView(generic.View):
         return HttpResponseRedirect('/account/')
 
 
-class InstitutionPanelView(generic.View):
+class AccountInstitutionView(generic.View):
     template_name = 'rzemieslnicy/institution_panel.html'
 
     def is_owner(self, request):
