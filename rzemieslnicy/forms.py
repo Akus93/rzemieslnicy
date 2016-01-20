@@ -12,18 +12,25 @@ class UserCreationForm(forms.ModelForm):
     error_messages = {
         'password_mismatch': "The two password fields didn't match.",
     }
-    username = forms.CharField(label="Username", max_length=30, required=True)
-    password1 = forms.CharField(label="Password", required=True,
-        widget=forms.PasswordInput)
-    password2 = forms.CharField(label="Password confirmation", required=True,
-        widget=forms.PasswordInput)
+    username = forms.CharField(max_length=30, required=True)
+    password1 = forms.CharField(required=True, widget=forms.PasswordInput)
+    password2 = forms.CharField(required=True, widget=forms.PasswordInput)
     email = forms.EmailField(required=True)
-    first_name = forms.CharField(max_length=30, required=True, label="First name")
-    last_name = forms.CharField(max_length=30, required=True, label="Last name")
+    first_name = forms.CharField(max_length=30, required=True)
+    last_name = forms.CharField(max_length=30, required=True)
 
     class Meta:
         model = User
         fields = ["username", "password1", "password2", "email", "first_name", "last_name"]
+
+    def __init__(self, *args, **kwargs):
+        super(UserCreationForm, self).__init__(*args, **kwargs)
+        self.fields['username'].label = 'Nazwa użytkownika'
+        self.fields['password1'].label = 'Hasło'
+        self.fields['password2'].label = 'Powtórz hasło'
+        self.fields['username'].label = 'Nazwa użytkownika'
+        self.fields['first_name'].label = 'Imię'
+        self.fields['last_name'].label = 'Nazwisko'
 
     def clean_password2(self):
         password1 = self.cleaned_data.get("password1")
@@ -53,6 +60,15 @@ class TradesmanCreationForm(UserCreationForm):
     class Meta:
         model = Tradesman
         fields = ["username", "password1", "password2", "email", "first_name", "last_name", "NIP"]
+
+    def __init__(self, *args, **kwargs):
+        super(TradesmanCreationForm, self).__init__(*args, **kwargs)
+        self.fields['username'].label = 'Nazwa użytkownika'
+        self.fields['password1'].label = 'Hasło'
+        self.fields['password2'].label = 'Powtórz hasło'
+        self.fields['username'].label = 'Nazwa użytkownika'
+        self.fields['first_name'].label = 'Imię'
+        self.fields['last_name'].label = 'Nazwisko'
 
     def save(self, commit=True):
         user = User.objects.create_user(self.cleaned_data['username'])
@@ -177,10 +193,13 @@ class OpinionReportForm(forms.ModelForm):
         model = ReportedOpinion
         fields = ['reason']
 
+    reason = forms.CharField(widget=forms.Textarea(attrs={'class': "materialize-textarea"}), max_length=200)
+
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         self.opinion = kwargs.pop('opinion', None)
         super(OpinionReportForm, self).__init__(*args, **kwargs)
+        self.fields['reason'].label = 'Powód'
 
     def save(self, commit=True):
         reported_opinion = super(OpinionReportForm, self).save(commit=False)

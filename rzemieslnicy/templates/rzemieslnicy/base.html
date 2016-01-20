@@ -16,30 +16,30 @@
   <nav class="light-blue lighten-1" role="navigation">
     <div class="nav-wrapper container"><a id="logo-container" href="/home/" class="brand-logo">Rzemieślnicy</a>
       <ul class="right hide-on-med-and-down">
-        <li><a href="{% url 'index' %}">Home</a></li>
-        <li><a href="{% url 'contact' %}">Contact</a></li>
-        <li><a href="{% url 'about' %}">About</a></li>
+        <li><a href="{% url 'index' %}"><i class="material-icons">home</i></a></li>
+        <li><a href="{% url 'contact' %}">Kontakt</a></li>
+        <li><a href="{% url 'about' %}">O nas</a></li>
         {% if not user.is_authenticated %}
-            <li><a href="{% url 'login' %}">Log in</a></li>
-            <li><a href="{% url 'signup' %}">Sign up</a></li>
+            <li><a href="{% url 'login' %}">Zaloguj</a></li>
+            <li><a href="{% url 'signup' %}">Rejestracja</a></li>
         {% endif %}
         {% if user.is_authenticated %}
-            <li><a href="{% url 'account' %}">Account</a></li>
-            <li><a href="{% url 'logout' %}">Log out</a></li>
+            <li><a href="{% url 'account' %}">Konto</a></li>
+            <li><a href="{% url 'logout' %}">Wyloguj</a></li>
         {% endif %}
       </ul>
 
       <ul id="nav-mobile" class="side-nav">
-        <li><a href="{% url 'index' %}">Home</a></li>
-        <li><a href="{% url 'contact' %}">Contact</a></li>
-        <li><a href="{% url 'about' %}">About</a></li>
+        <li><a href="{% url 'index' %}"><i class="material-icons">home</i></a></li>
+        <li><a href="{% url 'contact' %}">Kontakt</a></li>
+        <li><a href="{% url 'about' %}">O nas</a></li>
         {% if not user.is_authenticated %}
-            <li><a href="{% url 'login' %}">Log in</a></li>
-            <li><a href="{% url 'signup' %}">Sign up</a></li>
+            <li><a href="{% url 'login' %}">Zaloguj</a></li>
+            <li><a href="{% url 'signup' %}">Rejestracja</a></li>
         {% endif %}
         {% if user.is_authenticated %}
-            <li><a href="{% url 'account' %}">Account</a></li>
-            <li><a href="{% url 'logout' %}">Log out</a></li>
+            <li><a href="{% url 'account' %}">Konto</a></li>
+            <li><a href="{% url 'logout' %}">Wyloguj</a></li>
         {% endif %}
       </ul>
       <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
@@ -94,7 +94,7 @@
     </div>
     <div class="footer-copyright">
       <div class="container">
-      Made by <span class="orange-text text-lighten-3" >Dawid Rdzanek</span>
+      Made by <span class="orange-text text-lighten-3" >Dawid Rdzanek i Remigiusz Antczak</span>
       </div>
     </div>
   </footer>

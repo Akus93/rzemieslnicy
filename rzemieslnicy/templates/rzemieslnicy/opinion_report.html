@@ -1,14 +1,26 @@
 {% extends 'rzemieslnicy/base.html' %}
 
 {% block content %}
+    <div class="card-panel">
 
     Zgłoś opinie:<br>
     <blockquote><pre>{{ opinion.text }}</pre></blockquote>
 
     <form action="" method="post">{% csrf_token %}
-        {{ form.as_p }}
+        {{ form.non_field_errors }}
+        <p>
+        <div class="input-field col s12">
+            {{ form.reason.errors }}
+            {{ form.reason.label_tag }}
+            {{ form.reason }}
+        </div>
+        </p>
         <br>
         <button class="waves-effect waves-light btn light-blue lighten-1" name="form" type="submit" >Zgłoś opinie</button>
     </form>
+    </div>
 
+    <script>
+      $('#id_message').trigger('autoresize');
+    </script>
 {% endblock content %}
