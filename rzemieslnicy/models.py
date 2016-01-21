@@ -4,6 +4,8 @@ from django.utils.timesince import timesince
 from datetime import datetime
 from django.utils.timezone import utc
 
+from osm_field.fields import LatitudeField, LongitudeField, OSMField
+
 
 class Tradesman(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -83,6 +85,9 @@ class Institution(models.Model):
     short_description = models.CharField(max_length=100, null=True)
     long_description = models.TextField(max_length=500)
     rate = models.DecimalField(max_digits=3, decimal_places=2, default=3.00)
+    location = OSMField(null=True)
+    location_lat = LatitudeField(null=True)
+    location_lon = LongitudeField(null=True)
 
     def __str__(self):
         return self.name
@@ -146,3 +151,4 @@ class ActiveService(models.Model):
 
     def days_to_end(self):
         return timesince(datetime.now().replace(tzinfo=utc), self.end_date.replace(tzinfo=utc))
+

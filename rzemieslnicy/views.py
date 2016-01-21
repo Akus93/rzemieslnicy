@@ -267,6 +267,43 @@ class ServiceAddView(generic.View):
         return render(request, self.template_name, {'form': form})
 
 
+class MapAddView(generic.View):
+    form_class = MapAddForm
+    template_name = 'rzemieslnicy/add_map.html'
+
+    def is_owner(self, request):
+        company_pk = int(self.kwargs['company_pk'])
+        companies = request.user.tradesman.company_set.all()
+        companies_id = [company.id for company in companies]
+        institution_pk = int(self.kwargs['institution_pk'])
+        if company_pk in companies_id:
+            company = Company.objects.get(pk=company_pk)
+            instituitons_id = [institution.id for institution in company.institution_set.all()]
+            if institution_pk in instituitons_id:
+                return True
+        return False
+
+    def get(self, request, *args, **kwargs):
+        if self.is_owner(request):
+            form = self.form_class()
+            return render(request, self.template_name, {'form': form})
+        return HttpResponseRedirect('/account')
+
+    def post(self, request, *args, **kwargs):
+        if self.is_owner(request):
+            institution_pk = self.kwargs['institution_pk']
+            institution = Institution.objects.get(id=institution_pk)
+            form = self.form_class(request.POST)
+            if form.is_valid():
+                institution.location = form.cleaned_data['location']
+                institution.location_lat = form.cleaned_data['location_lat']
+                institution.location_lon = form.cleaned_data['location_lon']
+                institution.save()
+                return HttpResponseRedirect('/institution/%s' % institution_pk)
+            return render(request, self.template_name, {'form': form})
+        return HttpResponseRedirect('/account')
+
+
 
 
 

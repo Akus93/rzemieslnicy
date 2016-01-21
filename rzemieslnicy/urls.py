@@ -4,6 +4,7 @@ from django.conf.urls import url
 from . import views
 
 urlpatterns = [
+
     url(r'^home/', views.IndexView.as_view(), name='index'),
 
     url(r'^institution/(?P<pk>[0-9]+)/$', views.InstitutionView.as_view(), name='institution'),
@@ -42,4 +43,7 @@ urlpatterns = [
 
     url(r'^account/company/(?P<company_pk>[0-9]+)/institution/(?P<institution_pk>[0-9]+)/services/add/$',
         views.ServiceAddView.as_view(), name='service_add'),
+
+    url(r'^account/company/(?P<company_pk>[0-9]+)/institution/(?P<institution_pk>[0-9]+)/map/add/$',
+        views.MapAddView.as_view(), name='add_map'),
 ]

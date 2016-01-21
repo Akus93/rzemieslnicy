@@ -224,7 +224,6 @@ class ServiceAddForm(forms.ModelForm):
         super(ServiceAddForm, self).__init__(*args, **kwargs)
 
     def save(self, commit=True):
-        # service = super(ServiceAddForm(self).save(commit=False))
         service = ActiveService()
         service.institution = Institution.objects.get(pk=self.institution)
         service.paid_service = PaidService.objects.get(pk=self.service)
@@ -235,8 +234,13 @@ class ServiceAddForm(forms.ModelForm):
         return service
 
 
+class MapAddForm(forms.ModelForm):
 
-
+    class Meta:
+        fields = ('location', 'location_lat', 'location_lon', )
+        model = Institution
+        widgets = {'location_lat': forms.HiddenInput(),
+                   'location_lon': forms.HiddenInput()}
 
 
 

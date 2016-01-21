@@ -1,0 +1,13 @@
+{% extends 'rzemieslnicy/base.html' %}
+
+{% block content %}
+
+    <script type="text/javascript" src="//code.jquery.com/jquery-2.1.0.min.js"></script>
+    {{ form.media }}
+        <form action="" method="post">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <input type="submit" value="Save" />
+        </form>
+
+{% endblock content %}
