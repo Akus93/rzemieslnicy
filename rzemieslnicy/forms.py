@@ -130,7 +130,7 @@ class InstitutionCreationForm(forms.ModelForm):
 
     class Meta:
         model = Institution
-        exclude = ['company', 'rate']
+        exclude = ['company', 'rate', 'location', 'location_lat', 'location_lon']
 
     name = forms.CharField(max_length=128)
     area = forms.ModelChoiceField(queryset=Area.objects.all(), initial=0)
@@ -145,6 +145,9 @@ class InstitutionCreationForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.company = kwargs.pop('company', None)
+        self.location_lon = None
+        self.location_lat = None
+        self.location = None
         super(InstitutionCreationForm, self).__init__(*args, **kwargs)
         self.fields['name'].label = 'Nazwa'
         self.fields['address'].label = 'Adres'
