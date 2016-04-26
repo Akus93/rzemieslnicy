@@ -1,5 +1,4 @@
-.idea
-manage.py
+.idea/
 migrations
 *.pyc
 __pycache__
