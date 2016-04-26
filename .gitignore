@@ -1,0 +1,6 @@
+.idea
+manage.py
+migrations
+*.pyc
+__pycache__
+*.py[cod]
