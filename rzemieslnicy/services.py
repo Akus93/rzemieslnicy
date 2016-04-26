@@ -25,7 +25,7 @@ def get_search_context(search):
         elif Province.objects.filter(name__startswith=word[:5].capitalize()).exists():
             context['province'].append(word[:5].capitalize())
         elif Craft.objects.filter(name=word.capitalize()).exists():
-            context['craft'].append(word.capitalize())
+            context['craft'].append(word.lower())
         elif Institution.objects.filter(name__icontains=word).exists():
             context['name'].append(word)
     return context
@@ -51,7 +51,8 @@ def get_institutions(search):
             results = Institution.objects.filter(query)
         else:
             results = results.filter(query)
-    results = results.order_by('-rate')
+    if results:
+        results = results.order_by('-rate')
     return results
 
 
