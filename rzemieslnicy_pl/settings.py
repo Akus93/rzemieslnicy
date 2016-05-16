@@ -110,11 +110,11 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'pl'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Warsaw'
 
-USE_I18N = True
+USE_I18N = False  # True
 
 USE_L10N = True
 
@@ -131,7 +131,7 @@ STATICFILES_DIRS = (
 )
 
 ABSOLUTE_URL_OVERRIDES = {
-    'auth.user': lambda u: "/home/",
+    'auth.user': lambda u: "/",
 }
 
-LOGIN_REDIRECT_URL = '/home/'
+LOGIN_REDIRECT_URL = '/'

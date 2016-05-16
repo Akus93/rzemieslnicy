@@ -97,6 +97,30 @@ class Institution(models.Model):
             return True
         return False
 
+    def as_dict(self):
+        opinions = []
+        for opinion in self.opinion_set.all():
+            opinions.append(opinion.as_dict())
+        return {
+            'company': self.company.name,
+            'name': self.name,
+            'area': self.area.name,
+            'address': self.address,
+            'city': self.city.name,
+            'postal_code': self.postal_code,
+            'phone': self.phone,
+            'email': self.email,
+            'site': self.site,
+            'short_description': self.short_description,
+            'long_description': self.long_description,
+            'rate': str(self.rate),
+            'location': self.location,
+            'location_lat': self.location_lat,
+            'location_lon': self.location_lon,
+            'opinions': opinions,
+            'is_awarded': self.is_awarded()
+        }
+
 
 class InstitutionCraft(models.Model):
     institution = models.ForeignKey(Institution)
@@ -121,6 +145,17 @@ class Opinion(models.Model):
 
     def __str__(self):
         return self.text
+
+    def as_dict(self):
+        if self.is_visible:
+            return {
+                'user': self.user.get_full_name() or self.user.username,
+                'institution': self.institution.name,
+                'rate': self.rate,
+                'text': self.text
+            }
+        else:
+            return None
 
 
 class ReportedOpinion(models.Model):
@@ -152,3 +187,13 @@ class ActiveService(models.Model):
     def days_to_end(self):
         return timesince(datetime.now().replace(tzinfo=utc), self.end_date.replace(tzinfo=utc))
 
+
+class SearchHistory(models.Model):
+    user = models.ForeignKey(User)
+    city = models.CharField(max_length=32, null=True)
+    province = models.CharField(max_length=64, null=True)
+    craft = models.CharField(max_length=64, null=True)
+    search_date = models.DateField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-search_date']

@@ -1,11 +1,12 @@
 from django.conf.urls import url
-
+from django.views.decorators.csrf import csrf_exempt
 
 from . import views
+from . import api
 
 urlpatterns = [
 
-    url(r'^home/', views.IndexView.as_view(), name='index'),
+    url(r'^$', views.IndexView.as_view(), name='index'),
 
     url(r'^institution/(?P<pk>[0-9]+)/$', views.InstitutionView.as_view(), name='institution'),
 
@@ -15,7 +16,7 @@ urlpatterns = [
 
     url(r'^login/$', 'django.contrib.auth.views.login', name='login'),
 
-    url(r'^logout/$', 'django.contrib.auth.views.logout', {'next_page': '/home/'}, name='logout'),
+    url(r'^logout/$', 'django.contrib.auth.views.logout', {'next_page': '/'}, name='logout'),
 
     url(r'^contact/$', views.ContactView.as_view(), name='contact'),
 
@@ -46,4 +47,10 @@ urlpatterns = [
 
     url(r'^account/company/(?P<company_pk>[0-9]+)/institution/(?P<institution_pk>[0-9]+)/map/add/$',
         views.MapAddView.as_view(), name='add_map'),
+
+    # API
+    url(r'^api/search/$', api.SearchApi.as_view(), name='search_api'),
+    url(r'^api/login/$', csrf_exempt(api.LoginApi.as_view()), name='login_api'),
+    url(r'^api/signup/$', csrf_exempt(api.SignupApi.as_view()), name='signup_api'),
+    url(r'^api/opinion/add/$', csrf_exempt(api.OpinionCreateApi.as_view()), name='opinion_create_api'),
 ]

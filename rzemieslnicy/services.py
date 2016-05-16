@@ -2,8 +2,8 @@ from operator import and_
 from django.db.models import Q
 from functools import reduce
 
-from .models import Institution, City, Province, Craft, InstitutionCraft, Opinion
-from django.db.models import Avg
+from .models import Institution, City, Province, Craft, InstitutionCraft, Opinion, SearchHistory
+from django.db.models import Avg, Count, Max
 
 
 def pl_to_en(word):
@@ -25,14 +25,15 @@ def get_search_context(search):
         elif Province.objects.filter(name__startswith=word[:5].capitalize()).exists():
             context['province'].append(word[:5].capitalize())
         elif Craft.objects.filter(name=word.capitalize()).exists():
-            context['craft'].append(word.lower())
+            context['craft'].append(word.capitalize())
         elif Institution.objects.filter(name__icontains=word).exists():
             context['name'].append(word)
     return context
 
 
-def get_institutions(search):
-    context = get_search_context(search)
+def get_institutions(search, context=False):
+    if not context:
+        context = get_search_context(search)
     results = None
     if len(context['city']):
         results = Institution.objects.filter(city__name__in=context['city'])
@@ -52,7 +53,7 @@ def get_institutions(search):
         else:
             results = results.filter(query)
     if results:
-        results = results.order_by('-rate')
+        results = results.select_related('company', 'area', 'city', 'city__province', ).order_by('-rate')
     return results
 
 
@@ -77,6 +78,28 @@ def update_institution_rate(institution_pk):
     new_rate = Opinion.objects.filter(institution=institution).filter(is_visible=True).aggregate(Avg('rate')).get('rate__avg')
     institution.rate = new_rate
     institution.save()
+
+
+def get_user_ad_info(user):
+    if SearchHistory.objects.filter(user=user, city__isnull=False).exists():
+        top_city = SearchHistory.objects.filter(user=user).exclude(city__isnull=True).values('city') \
+                                        .annotate(city_count=Count('city')).order_by('-city_count')[0]['city']
+    else:
+        top_city = False
+    if SearchHistory.objects.filter(user=user, province__isnull=False).exists():
+        top_province = SearchHistory.objects.filter(user=user).exclude(province__isnull=True).values('province') \
+                                .annotate(province_count=Count('province')).order_by('-province_count')[0]['province']
+    else:
+        top_province = False
+    if SearchHistory.objects.filter(user=user, craft__isnull=False).exists():
+        top_craft = SearchHistory.objects.filter(user=user).exclude(craft__isnull=True).values('craft') \
+            .annotate(craft_count=Count('craft')).order_by('-craft_count')[0]['craft']
+    else:
+        top_craft = False
+
+    return dict(top_city=top_city, top_craft=top_craft, top_province=top_province)
+
+
 
 
 
