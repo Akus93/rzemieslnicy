@@ -3,27 +3,25 @@
 {% block content %}
 
 {% if form.errors %}
-<p>Your username and password didn't match. Please try again.</p>
+<p>Twoja nazwa użytkownika i hasło nie pasują do siebie. Spróbuj jeszcze raz.</p>
 {% endif %}
 
-<div class="row">
     <form method="post" action="{% url 'django.contrib.auth.views.login' %}">
     {% csrf_token %}
         <div class="row">
-        <div class="input-field col s6">
+        <div class="input-field col s12 m6 l6">
           <i class="material-icons prefix">account_circle</i>
-          <input id="id_username" maxlength="254" name="username" type="text" class="validate" />
-          <label for="id_username">Username</label>
+          <input id="id_username" maxlength="254" name="username" type="text" class="validate" autofocus />
+          <label for="id_username">Użytkownik</label>
         </div>
-        <div class="input-field col s6">
+        <div class="input-field col s12 m6 l6">
           <i class="material-icons prefix">vpn_key</i>
           <input id="id_password" name="password" type="password" class="validate" />
-          <label for="id_password">Password</label>
+          <label for="id_password">Hasło</label>
         </div>
       </div>
-    <button class="waves-effect waves-light btn light-blue lighten-1" name="form" type="submit" >Log In</button>
+    <button class="waves-effect waves-light btn light-blue lighten-1" name="form" type="submit" >Zaloguj</button>
     <input type="hidden" name="next" value="{{ next }}" />
     </form>
-</div>
 
 {% endblock %}

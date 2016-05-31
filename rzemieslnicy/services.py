@@ -3,7 +3,7 @@ from django.db.models import Q
 from functools import reduce
 
 from .models import Institution, City, Province, Craft, InstitutionCraft, Opinion, SearchHistory
-from django.db.models import Avg, Count, Max
+from django.db.models import Avg, Count
 
 
 def pl_to_en(word):

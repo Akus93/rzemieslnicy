@@ -8,86 +8,105 @@ from osm_field.fields import LatitudeField, LongitudeField, OSMField
 
 
 class Tradesman(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='Użytkownik')
     NIP = models.CharField(max_length=10)
 
     class Meta:
-        verbose_name_plural = "Tradesmen"
+        verbose_name_plural = "Rzemieślnicy"
+        verbose_name = 'rzemieślnika'
 
     def __str__(self):
         return self.full_name()
 
     def full_name(self):
-        return "%s %s" % (self.user.first_name, self.user.last_name)
+        return self.user.get_full_name()
 
 
 class Company(models.Model):
-    tradesman = models.ForeignKey(Tradesman)
-    name = models.CharField(max_length=256, unique=True)
+    tradesman = models.ForeignKey(Tradesman, verbose_name='Rzemieślnik')
+    name = models.CharField(max_length=255, unique=True, verbose_name='Nazwa')
     krs = models.CharField(max_length=10, unique=True)
     regon = models.CharField(max_length=14, unique=True, null=True)
-    address = models.CharField(max_length=256)
-    postal_code = models.CharField(max_length=6)
-    city = models.CharField(max_length=50)
-    phone = models.CharField(max_length=15)
+    address = models.CharField(max_length=255, verbose_name='Adres')
+    postal_code = models.CharField(max_length=6, verbose_name='Kod pocztowy')
+    city = models.CharField(max_length=50, verbose_name='Miasto')
+    phone = models.CharField(max_length=15, verbose_name='Telefon')
     email = models.EmailField(unique=True)
-    site = models.URLField(null=True)
+    site = models.URLField(null=True, verbose_name='Strona WWW')
 
     class Meta:
-        verbose_name_plural = "Companies"
+        verbose_name_plural = "Firmy"
+        verbose_name = 'firmę'
 
     def __str__(self):
         return self.name
 
 
 class Province(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, verbose_name='Nazwa')
+
+    class Meta:
+        verbose_name_plural = 'Województwa'
+        verbose_name = 'województwo'
 
     def __str__(self):
         return self.name
 
 
 class City(models.Model):
-    name = models.CharField(max_length=50)
-    province = models.ForeignKey(Province)
+    name = models.CharField(max_length=50, verbose_name='Nazwa')
+    province = models.ForeignKey(Province, verbose_name='Województwo')
 
     class Meta:
-        verbose_name_plural = "Cities"
+        verbose_name_plural = "Miasta"
+        verbose_name = 'miasto'
 
     def __str__(self):
         return self.name
 
 
 class Craft(models.Model):
-    name = models.CharField(max_length=128)
+    name = models.CharField(max_length=128, verbose_name='Nazwa')
+
+    class Meta:
+        verbose_name_plural = 'Specjalizacje'
+        verbose_name = 'specjalizację'
 
     def __str__(self):
         return self.name
 
 
 class Area(models.Model):
-    name = models.CharField(max_length=45)
+    name = models.CharField(max_length=45, verbose_name='Obszar')
+
+    class Meta:
+        verbose_name_plural = 'Obszary'
+        verbose_name = 'obszar'
 
     def __str__(self):
         return self.name
 
 
 class Institution(models.Model):
-    company = models.ForeignKey(Company)
-    name = models.CharField(max_length=128)
-    area = models.ForeignKey(Area)
-    address = models.CharField(max_length=256)
-    city = models.ForeignKey(City)
-    postal_code = models.CharField(max_length=6)
-    phone = models.CharField(max_length=15)
+    company = models.ForeignKey(Company, verbose_name='Firma')
+    name = models.CharField(max_length=128, verbose_name='Nazwa')
+    area = models.ForeignKey(Area, verbose_name='Obszar')
+    address = models.CharField(max_length=255, verbose_name='Adres')
+    city = models.ForeignKey(City, verbose_name='Miasto')
+    postal_code = models.CharField(max_length=6, verbose_name='Kod pocztowy')
+    phone = models.CharField(max_length=15, verbose_name='Telefon')
     email = models.EmailField()
-    site = models.URLField(null=True)
-    short_description = models.CharField(max_length=100, null=True)
-    long_description = models.TextField(max_length=500)
-    rate = models.DecimalField(max_digits=3, decimal_places=2, default=3.00)
-    location = OSMField(null=True)
-    location_lat = LatitudeField(null=True)
-    location_lon = LongitudeField(null=True)
+    site = models.URLField(null=True, verbose_name='Strona WWW')
+    short_description = models.CharField(max_length=100, null=True, verbose_name='Krótki opis')
+    long_description = models.TextField(max_length=500, verbose_name='Długi opis')
+    rate = models.DecimalField(max_digits=3, decimal_places=2, default=3.00, verbose_name='Ocena')
+    location = OSMField(null=True, verbose_name='Lokalizacja')
+    location_lat = LatitudeField(null=True, verbose_name='Szerokość geograficzna')
+    location_lon = LongitudeField(null=True, verbose_name='Długość geograficzna')
+
+    class Meta:
+        verbose_name_plural = 'Zakłady'
+        verbose_name = 'zakład'
 
     def __str__(self):
         return self.name
@@ -123,28 +142,40 @@ class Institution(models.Model):
 
 
 class InstitutionCraft(models.Model):
-    institution = models.ForeignKey(Institution)
-    craft = models.ForeignKey(Craft)
+    institution = models.ForeignKey(Institution, verbose_name='Zakład')
+    craft = models.ForeignKey(Craft, verbose_name='Specjalizacja')
+
+    class Meta:
+        verbose_name_plural = 'Specjalności zakładów'
+        verbose_name = 'specjalność zakładu'
 
 
 class Rating(models.Model):
-    user = models.ForeignKey(User)
-    institution = models.ForeignKey(Institution)
-    value = models.SmallIntegerField(choices=[(1, 1), (2, 2), (3, 3), (4, 4), (5, 5)])
+    user = models.ForeignKey(User, verbose_name='Użytkownik')
+    institution = models.ForeignKey(Institution, verbose_name='Zakład')
+    value = models.SmallIntegerField(choices=[(1, 1), (2, 2), (3, 3), (4, 4), (5, 5)], verbose_name='Ocena')
 
     def __str__(self):
         return 'From: ' + self.user.get_full_name() + ' To: ' + self.institution.name
 
+    class Meta:
+        verbose_name_plural = 'Oceny'
+        verbose_name = 'ocenę'
+
 
 class Opinion(models.Model):
-    user = models.ForeignKey(User)
-    institution = models.ForeignKey(Institution)
-    rate = models.SmallIntegerField(choices=[(1, 1), (2, 2), (3, 3), (4, 4), (5, 5)])
-    text = models.TextField(max_length=500)
-    is_visible = models.BooleanField(default=True)
+    user = models.ForeignKey(User, verbose_name='Użytkownik')
+    institution = models.ForeignKey(Institution, verbose_name='Zakład')
+    rate = models.SmallIntegerField(choices=[(1, 1), (2, 2), (3, 3), (4, 4), (5, 5)], verbose_name='Ocena')
+    text = models.TextField(max_length=500, verbose_name='Treść opini')
+    is_visible = models.BooleanField(default=True, verbose_name='Czy aktywna?')
+
+    class Meta:
+        verbose_name_plural = 'Opinie'
+        verbose_name = 'opinię'
 
     def __str__(self):
-        return self.text
+        return '{} ocenił {}'.format(self.user.username, self.institution.name)
 
     def as_dict(self):
         if self.is_visible:
@@ -159,41 +190,62 @@ class Opinion(models.Model):
 
 
 class ReportedOpinion(models.Model):
-    opinion = models.ForeignKey(Opinion)
-    user = models.ForeignKey(User)
-    reason = models.TextField(max_length=250)
-    is_pending = models.BooleanField(default=True)
+    opinion = models.ForeignKey(Opinion, verbose_name='Opinia')
+    user = models.ForeignKey(User, verbose_name='Użytkownik')
+    reason = models.TextField(max_length=250, verbose_name='Powód')
+    is_pending = models.BooleanField(default=True, verbose_name='Oczekujący')
+
+    class Meta:
+        verbose_name_plural = 'Zgłoszone opinie'
+        verbose_name = 'zgłoszoną opinię'
 
     def __str__(self):
-        return self.opinion.text
+        return 'Zgłoszenie: {}'.format(self.opinion)
 
 
 class PaidService(models.Model):
-    name = models.CharField(max_length=50)
-    price = models.FloatField()
-    description = models.TextField(max_length=150)
-    time = models.IntegerField()
+    name = models.CharField(max_length=50, verbose_name='Nazwa')
+    price = models.FloatField(verbose_name='Cena')
+    description = models.TextField(max_length=150, verbose_name='Opis')
+    time = models.IntegerField(verbose_name='Czas trwania')
+
+    class Meta:
+        verbose_name_plural = 'Płatne dodatki'
+        verbose_name = 'płatny dodatek'
 
     def __str__(self):
         return self.name
 
 
 class ActiveService(models.Model):
-    institution = models.ForeignKey(Institution)
-    paid_service = models.ForeignKey(PaidService)
-    start_date = models.DateTimeField()
-    end_date = models.DateTimeField()
+    institution = models.ForeignKey(Institution, verbose_name='Zakład')
+    paid_service = models.ForeignKey(PaidService, verbose_name='Płatny dodatek')
+    start_date = models.DateTimeField(verbose_name='Data aktywacji')
+    end_date = models.DateTimeField(verbose_name='Data końca')
+
+    class Meta:
+        verbose_name_plural = 'Aktywne dodatki'
+        verbose_name = 'aktywny dodatek'
+
+    def __str__(self):
+        return '{} aktywował {}'.format(self.institution, self.paid_service)
 
     def days_to_end(self):
         return timesince(datetime.now().replace(tzinfo=utc), self.end_date.replace(tzinfo=utc))
 
 
 class SearchHistory(models.Model):
-    user = models.ForeignKey(User)
-    city = models.CharField(max_length=32, null=True)
-    province = models.CharField(max_length=64, null=True)
-    craft = models.CharField(max_length=64, null=True)
-    search_date = models.DateField(auto_now_add=True)
+    user = models.ForeignKey(User, verbose_name='Użytkownik')
+    city = models.CharField(max_length=32, null=True, verbose_name='Miasto')
+    province = models.CharField(max_length=64, null=True, verbose_name='Województwo')
+    craft = models.CharField(max_length=64, null=True, verbose_name='Specjalizacja')
+    search_date = models.DateField(auto_now_add=True, verbose_name='Data wyszukiwania')
 
     class Meta:
+        verbose_name_plural = 'Historia wyszukiwania'
+        verbose_name = 'wyszukiwanie'
         ordering = ['-search_date']
+
+    def __str__(self):
+        return 'Wyszukiwanie użytkownika {}'.format(self.user.get_full_name() or self.user.username)
+

@@ -10,7 +10,7 @@
  * Modified by Dawid Rdzanek
  */
 
-(function( $ ) {
+(function($) {
 	$.fn.addRating = function(options) {
 		var obj = this;
 		var settings = $.extend({
