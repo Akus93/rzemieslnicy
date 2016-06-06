@@ -21,7 +21,7 @@
         <li><a href="{% url 'contact' %}">Kontakt</a></li>
         <li><a href="{% url 'about' %}">O nas</a></li>
         {% if not user.is_authenticated %}
-            <li><a class="modal-trigger" data-target="login-modal">Zaloguj</a></li>
+            <li><a class="modal-trigger" href="" data-target="login-modal">Zaloguj</a></li>
             <li><a href="{% url 'signup' %}">Rejestracja</a></li>
         {% endif %}
         {% if user.is_authenticated %}

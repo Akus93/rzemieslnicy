@@ -92,6 +92,7 @@ class Institution(models.Model):
     name = models.CharField(max_length=128, verbose_name='Nazwa')
     area = models.ForeignKey(Area, verbose_name='Obszar')
     address = models.CharField(max_length=255, verbose_name='Adres')
+    image = models.ImageField('Obrazek', upload_to='institution_images', blank=True)
     city = models.ForeignKey(City, verbose_name='Miasto')
     postal_code = models.CharField(max_length=6, verbose_name='Kod pocztowy')
     phone = models.CharField(max_length=15, verbose_name='Telefon')
@@ -100,9 +101,10 @@ class Institution(models.Model):
     short_description = models.CharField(max_length=100, null=True, verbose_name='Krótki opis')
     long_description = models.TextField(max_length=500, verbose_name='Długi opis')
     rate = models.DecimalField(max_digits=3, decimal_places=2, default=3.00, verbose_name='Ocena')
-    location = OSMField(null=True, verbose_name='Lokalizacja')
-    location_lat = LatitudeField(null=True, verbose_name='Szerokość geograficzna')
-    location_lon = LongitudeField(null=True, verbose_name='Długość geograficzna')
+    location = OSMField(null=True, blank=True, verbose_name='Lokalizacja')
+    location_lat = LatitudeField(null=True, blank=True, verbose_name='Szerokość geograficzna')
+    location_lon = LongitudeField(null=True, blank=True, verbose_name='Długość geograficzna')
+    is_visible = models.BooleanField(default=False, verbose_name='Czy widoczny?')
 
     class Meta:
         verbose_name_plural = 'Zakłady'
@@ -242,7 +244,7 @@ class SearchHistory(models.Model):
     search_date = models.DateField(auto_now_add=True, verbose_name='Data wyszukiwania')
 
     class Meta:
-        verbose_name_plural = 'Historia wyszukiwania'
+        verbose_name_plural = 'Historie wyszukiwania'
         verbose_name = 'wyszukiwanie'
         ordering = ['-search_date']
 

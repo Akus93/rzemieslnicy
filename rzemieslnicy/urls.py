@@ -24,12 +24,19 @@ urlpatterns = [
 
     url(r'^account/$', views.AccountView.as_view(), name='account'),
 
+    url(r'^account/password/change/$', views.ChangePasswordView.as_view(), name='change_password'),
+    url(r'^user/(?P<pk>[0-9]+)/update/$', views.UserUpdateView.as_view(), name='user_update'),
+
     url(r'^account/company/(?P<pk>[0-9]+)/$', views.AccountCompanyView.as_view(), name='account_company'),
 
     url(r'^account/company/create/$', views.CompanyCreateView.as_view(), name='create_company'),
+    url(r'^company/(?P<pk>[0-9]+)/update/$', views.CompanyUpdateView.as_view(), name='company_update'),
+    url(r'^company/(?P<pk>[0-9]+)/delete/$', views.CompanyDeleteView.as_view(), name='company_delete'),
 
     url(r'^account/company/(?P<pk>[0-9]+)/institution/create/$', views.InstitutionCreateView.as_view(),
         name='create_institution'),
+    url(r'^institution/(?P<pk>[0-9]+)/update/$', views.InstitutionUpdateView.as_view(), name='institution_update'),
+    url(r'^institution/(?P<pk>[0-9]+)/delete/$', views.InstitutionDeleteView.as_view(), name='institution_delete'),
 
     url(r'^account/company/(?P<company_pk>[0-9]+)/institution/(?P<institution_pk>[0-9]+)/$',
         views.AccountInstitutionView.as_view(), name='institution_panel'),

@@ -2,21 +2,52 @@
 
 {% block content %}
 
+    <form action="" method="post">{% csrf_token %}
+      <div class="row">
+        <div class="input-field col s12">
+          <i class="material-icons prefix">search</i>
+          <input id="id_search" maxlength="100" type="text" class="validate" name="search" type="search">
+          <label for="id_search">Wyszukaj zakład</label>
+        </div>
+      </div>
+      <button class="btn waves-effect waves-light light-blue lighten-1" type="submit" name="action">Szukaj
+        <i class="material-icons right">send</i>
+      </button>
+    </form>
+
     <br>
-    <nav class="light-blue lighten-1">
-    <div class="nav-wrapper">
-        <form action="" method="post">{% csrf_token %}
-            {{ form.non_field_errors }}
-            <div class="input-field">
-                {{ form.search }}
-                <label class="active" for="search"><i class="material-icons">search</i></label>
-                <i class="material-icons">close</i>
+    <br>
+
+
+    {% if institutions %}
+        <div class="row">
+        {% for institution in institutions %}
+            <div class="col s12 m6 l3">
+              <div class="card small">
+                <div class="card-image waves-effect waves-block waves-light">
+                    <div style="background-color: rgba(255, 0, 0, 0.7); display: inline; padding: 5px; margin: 0px; position: absolute; z-index: 1; font-size: 14.5px !important;"><a style= "color: white;">{{ institution.city.name }}</a></div>
+                  <img class="activator card-image" src="{{ institution.image.url }}">
+                </div>
+                <div class="card-content">
+                  <span class="card-title activator grey-text text-darken-4">{{ institution.name }}</span>
+                </div>
+                <div class="card-action">
+                    <a href="{% url 'institution' institution.id %}">Zobacz więcej</a>
+                </div>
+                <div class="card-reveal">
+                  <span class="card-title grey-text text-darken-4">{{ institution.name }}<i class="material-icons right">close</i></span>
+                  <p>{{ institution.short_description }}</p>
+                </div>
+              </div>
             </div>
-              <button class="btn-large waves-effect waves-light light-blue lighten-1" type="submit" name="action">Znajdź zakład
-                  <i class="material-icons right">send</i>
-              </button>
-        </form>
-    </div>
-    </nav>
+
+            {% if forloop.counter|divisibleby:4 %}
+                </div>
+                <div class="row">
+            {% endif %}
+
+        {% endfor %}
+        </div>
+    {% endif %}
 
 {% endblock content %}

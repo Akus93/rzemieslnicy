@@ -1,14 +1,42 @@
 {% extends 'rzemieslnicy/base.html' %}
 
 {% block content %}
+    <div class="fixed-action-btn horizontal" style="top: 5.5em; right: 4.5em;">
+        <a class="btn-floating btn-large light-blue">
+          <i class="large material-icons">menu</i>
+        </a>
+        <ul>
+            <li>
+                <a class="btn-floating waves-effect waves-light light-blue tooltipped" data-position="bottom"
+                   data-delay="50" data-tooltip="Edytuj dane" href="{% url 'user_update' user.id %}">
+                    <i class="material-icons" style="font-size: 1.25rem;">edit</i>
+                </a>
+            </li>
+            <li>
+                <a class="btn-floating green tooltipped modal-trigger" data-position="bottom"
+                   data-target="change-password-modal" data-delay="50" data-tooltip="Zmień hasło" href="">
+                    <i class="material-icons" style="font-size: 1.25rem;">vpn_key</i>
+                </a>
+            </li>
+            {% if user.tradesman %}
+                <li>
+                    <a class="btn-floating btn waves-effect waves-light yellow darken-2 tooltipped" data-position="bottom"
+                       data-delay="50" data-tooltip="Dodaj firmę" href="{% url 'create_company' %}">
+                        <i class="material-icons">add</i>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
 
     <div class="row">
 
         <div class="col s6">
-            <h5>Twoje konto:</h5>
+            <h5>Twoje konto</h5>
             <p>Nazwa użytkownika: {{ user.get_username }}</p>
             <p>Imie: {{ user.first_name }}</p>
             <p>Nazwisko: {{ user.last_name }}</p>
+            <p>Email: {{ user.email }}</p>
             {% if user.tradesman %}
                 <p>NIP: {{ user.tradesman.NIP }}</p>
             {% endif %}
@@ -19,21 +47,56 @@
             {% if user.tradesman %}
                 <h5>Twoje firmy:</h5>
                 {% with companies=user.tradesman.company_set.all %}
-                <div class="collection">
-                    {% for company in companies %}
-                        <a class="collection-item" href="{% url 'account_company' company.pk %}">{{ company.name }}</a>
-                    {% endfor %}
-                </div>
-                <div class="right-align">
-                    <a class="btn-floating btn waves-effect waves-light light-blue tooltipped" data-position="top"
-                       data-delay="50" data-tooltip="Dodaj firmę" href="{% url 'create_company' %}">
-                        <i class="material-icons">add</i>
-                    </a>
-                </div>
+                {% if companies %}
+                    <div class="collection">
+                        {% for company in companies %}
+                            <a class="collection-item" href="{% url 'account_company' company.pk %}">{{ company.name }}</a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p>Nie dodano żadnej firmy.</p>
+                {% endif %}
                 {% endwith %}
             {% endif %}
         </div>
 
     </div>
+
+  <div id="change-password-modal" class="modal">
+    <div class="modal-content">
+      <h4>Zmiana hasła</h4>
+        <form action="{% url 'change_password' %}" method="post">{% csrf_token %}
+
+                {{ change_password_form.old_password.errors }}
+                {{ change_password_form.old_password.label_tag }}
+                {{ change_password_form.old_password}}
+
+                {{ change_password_form.new_password1.errors }}
+                {{ change_password_form.new_password1.label_tag }}
+                {{ change_password_form.new_password1}}
+
+                {{ change_password_form.new_password2.errors }}
+                {{ change_password_form.new_password2.label_tag }}
+                {{ change_password_form.new_password2}}
+
+            <div class="modal-footer">
+            <a href="#!" style="margin-left: 1em;" class="modal-action modal-close waves-effect waves-light btn light-blue lighten-1">Anuluj</a>
+            <button class="waves-effect waves-light btn light-blue lighten-1" name="change_password_form" type="submit" >Zmień</button>
+            </div>
+        </form>
+    </div>
+  </div>
+
+    <script>
+        $('.modal-trigger').leanModal()
+    </script>
+
+    {% if error_change_password %}
+        <script>
+        $(document).ready(function() {
+            $('#change-password-modal').openModal();
+        });
+        </script>
+    {% endif %}
 
 {% endblock content %}

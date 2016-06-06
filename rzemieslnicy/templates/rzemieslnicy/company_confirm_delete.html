@@ -1,0 +1,15 @@
+{% extends 'rzemieslnicy/base.html' %}
+
+{% block content %}
+    <div id="content-container">
+        <div class="side-p">
+            <h4>Czy na pewno?</h4>
+            <p>Chcesz usunąć firmę {{ object }}. Potwierdź operację.</p>
+            <form action="" method="post">
+                {% csrf_token %}
+                <input class="waves-effect waves-light btn light-blue lighten-1" type="button" value="Anuluj" onclick="window.history.go(-1);"/>
+                <input class="waves-effect waves-light btn light-blue lighten-1" style="margin-left: 1em;" type="submit" value="Potwierź"/>
+            </form>
+        </div>
+    </div>
+{% endblock %}

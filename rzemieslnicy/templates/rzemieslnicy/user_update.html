@@ -1,0 +1,18 @@
+{% extends 'rzemieslnicy/base.html' %}
+
+{% block content %}
+<div class="card-panel">
+    <h5 class="thin">Edycja użytkownika:</h5>
+    <br>
+    <form action="" method="post" enctype="multipart/form-data">{% csrf_token %}
+        {{ form.as_p }}
+        <input class="waves-effect waves-light btn light-blue lighten-1" type="submit" value="Zmień" />
+    </form>
+
+    <script>
+        $(document).ready(function() {
+            $('select').material_select();
+        });
+    </script>
+</div>
+{% endblock content %}

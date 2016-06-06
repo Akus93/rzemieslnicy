@@ -2,9 +2,36 @@
 
 {% block content %}
 
+        <div class="fixed-action-btn horizontal" style="top: 5.5em; right: 4.5em;">
+        <a class="btn-floating btn-large light-blue">
+          <i class="large material-icons">menu</i>
+        </a>
+        <ul>
+            <li>
+                <a class="btn-floating waves-effect waves-light light-blue tooltipped" data-position="bottom"
+                     data-delay="50" data-tooltip="Edytuj firmę" href="{% url 'company_update' company.id %}">
+                    <i class="material-icons" style="font-size: 1.25rem;">edit</i>
+                </a>
+            </li>
+            <li>
+                <a class="btn-floating waves-effect waves-light red tooltipped" data-position="bottom"
+                     data-delay="50" data-tooltip="Usuń firmę" href="{% url 'company_delete' company.id %}">
+                    <i class="material-icons" style="font-size: 1.25rem; margin-left: .5em;">delete_forever</i>
+                </a>
+            </li>
+            <li>
+                <a class="btn-floating btn waves-effect waves-light yellow darken-2 tooltipped" data-position="bottom"
+                    data-delay="50" data-tooltip="Dodaj zakład" href="{% url 'create_institution' company.id %}">
+                    <i class="material-icons">add</i>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+
     <div class="row">
         <div class="col s6">
-            <h5>Dane firmy:</h5>
+            <h5>Dane firmy</h5>
             <p>Nazwa: {{ company.name }}</p>
             <p>Właściciel: {{ company.tradesman.full_name }}</p>
             <p>Krs: {{ company.krs }}</p>
@@ -19,17 +46,17 @@
 
         <div class="col s6">
             <h5>Twoje zakłady:</h5>
-            <div class="collection">
-                {% for institution in company.institution_set.all %}
-                    <a class="collection-item" href="{% url 'institution_panel' company.id institution.id %}">{{ institution.name }}</a>
-                {% endfor %}
-            </div>
-            <div class="right-align">
-                <a class="btn-floating btn waves-effect waves-light light-blue tooltipped" data-position="top"
-                    data-delay="50" data-tooltip="Dodaj zakład" href="{% url 'create_institution' company.id %}">
-                    <i class="material-icons">add</i>
-                </a>
-            </div>
+            {% with institutions=company.institution_set.all %}
+                {% if institutions %}
+                <div class="collection">
+                    {% for institution in institutions %}
+                        <a class="collection-item" href="{% url 'institution_panel' company.id institution.id %}">{{ institution.name }}</a>
+                    {% endfor %}
+                </div>
+                {% else %}
+                    <p>Nie dodano jeszcze żadnego zakładu.</p>
+                {% endif %}
+            {% endwith %}
         </div>
     </div>
 

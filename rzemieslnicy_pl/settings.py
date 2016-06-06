@@ -135,3 +135,6 @@ ABSOLUTE_URL_OVERRIDES = {
 }
 
 LOGIN_REDIRECT_URL = '/'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'rzemieslnicy/uploads')
+MEDIA_URL = '/media/'

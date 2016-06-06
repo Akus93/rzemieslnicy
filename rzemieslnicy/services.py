@@ -54,6 +54,7 @@ def get_institutions(search, context=False):
             results = results.filter(query)
     if results:
         results = results.select_related('company', 'area', 'city', 'city__province', ).order_by('-rate')
+        results = results.filter(is_visible=True)
     return results
 
 

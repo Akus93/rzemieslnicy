@@ -5,13 +5,13 @@ from django.contrib.auth import authenticate, login, models
 from rzemieslnicy.services import get_institutions, update_institution_rate, get_search_context, get_user_ad_info
 from rzemieslnicy.forms import OpinionCreateForm, UserCreationForm
 from rzemieslnicy.models import SearchHistory
-from json import load as load_json
+from json import loads as load_json
 
 
 class SearchApi(generic.View):
 
     def get(self, request, *args, **kwargs):
-        search = load_json(request.body)['search']  # request.GET['search']
+        search = request.GET['search']  # load_json(request.body.decode('utf-8'))['search']  # request.GET['search']
         query_results = {'institutions': []}
         context = get_search_context(search)
         institutions = get_institutions(search, context)
@@ -38,7 +38,8 @@ class SearchApi(generic.View):
 class LoginApi(generic.View):
 
     def post(self, request, *args, **kwargs):
-        json_data = load_json(request.body)
+        body = request.body.decode('utf-8')
+        json_data = load_json(body)
         username = json_data['username']  # request.POST['username']
         password = json_data['password']  # request.POST['password']
         response = {}
@@ -59,7 +60,7 @@ class OpinionCreateApi(generic.View):
     form_class = OpinionCreateForm
 
     def post(self, request, *args, **kwargs):
-        json_data = load_json(request.body)
+        json_data = load_json(request.body.decode('utf-8'))
         institution_id = json_data['institution_id']  # request.POST.get('institution_id', '')
         try:
             user_pk = request.user.id
@@ -78,7 +79,7 @@ class SignupApi(generic.View):
     form_class = UserCreationForm
 
     def post(self, request, *args, **kwargs):
-        form = self.form_class(load_json(request.body))
+        form = self.form_class(load_json(request.body.decode('utf-8')))
         if form.is_valid():
             form.save()
             return JsonResponse({'success': True})

@@ -5,11 +5,29 @@
     <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
     <script src="{% static 'js/materialize.js'%}"></script>
     <script src="{% static 'js/init.js' %}"></script>
+    <link href="{% static 'css/croppie.css' %}" type="text/css" rel="stylesheet"/>
+
+    <style>
+        input[type="range"] + .thumb {
+          position: static;
+          display: none;
+        }
+
+        .n-tag {
+            border: none !important;
+        }
+
+        #id_title {
+            border: none !important;
+            border-bottom: 1px solid #9e9e9e !important;
+            width: 100% !important;
+        }
+    </style>
 
     <div class="card-panel">
         <h5 class="thin">Dodaj zakład:</h5>
         <br>
-        <form action="" method="post">{% csrf_token %}
+        <form id="institution-create-form" action="" method="post" enctype="multipart/form-data">{% csrf_token %}
 
             {% for field, errors in form.errors.items %}
                 {% for error in errors %}
@@ -20,8 +38,11 @@
             {{ form.non_field_errors }}
 
             {{ form.name.errors }}
+            <div class="input-field col s12">
             {{ form.name.label_tag }}
             {{ form.name }}
+            </div>
+            <br>
 
             {{ form.area.errors }}
             <div class="input-field col s12">
@@ -29,35 +50,48 @@
                 {{ form.area.label_tag }}
             </div>
 
+            <br>
+
             {{ form.address.errors }}
+            <div class="input-field col s12">
             {{ form.address.label_tag }}
             {{ form.address }}
-
+            </div>
+            <br>
             {{ form.city.errors }}
             <div class="input-field col s12">
             {{ form.city }}
             {{ form.city.label_tag }}
             </div>
-
+            <br>
             {{ form.postal_code.errors }}
+            <div class="input-field col s12">
             {{ form.postal_code.label_tag }}
             {{ form.postal_code }}
-
+            </div>
             {{ form.phone.errors }}
+            <div class="input-field col s12">
             {{ form.phone.label_tag }}
             {{ form.phone }}
+            </div>
 
             {{ form.email.errors }}
+            <div class="input-field col s12">
             {{ form.email.label_tag }}
             {{ form.email }}
+            </div>
 
             {{ form.site.errors }}
+            <div class="input-field col s12">
             {{ form.site.label_tag }}
             {{ form.site }}
+            </div>
 
             {{ form.short_description.errors }}
+            <div class="input-field col s12">
             {{ form.short_description.label_tag }}
             {{ form.short_description }}
+            </div>
 
             {{ form.long_description.errors }}
             <div class="input-field col s12">
@@ -65,10 +99,34 @@
                 {{ form.long_description }}
             </div>
 
+            <link rel="stylesheet" type="text/css" href="{% static 'css/institution-img.css' %}" />
+                <div class="profile-img-wrap upload-contener">
+                    <div class="upload-msg">
+                        Wybierz zdjęcie
+                    </div>
+                    <div id="upload-contener"></div>
+
+                    <div class="actions">
+                        <a class="btn file-btn waves-effect waves-light btn light-blue lighten-1">
+                            <span>Wybierz</span>
+                            <input type="file" name="image" id="choose_image" value="Wybierz zdjęcie" accept="image/*" />
+                            <input type="hidden" id="imagebase64" name="imagebase64">
+                        </a>
+
+                        <button class="upload-result waves-effect waves-light btn light-blue lighten-1" name="shortcut_form" >Dodaj zakład</button>
+                    </div>
+                </div>
+
             <br><br>
-            <button class="waves-effect waves-light btn light-blue lighten-1" name="form" type="submit" >Dodaj zakład</button>
         </form>
     </div>
+
+    <script type="text/javascript" src="{% static 'js/croppie.min.js' %}"></script>
+    <script src="{% static 'js/institution-img.js' %}"></script>
+
+   <script>
+        AddInstitutionImage.init();
+    </script>
 
     <script>
         $(document).ready(function() {

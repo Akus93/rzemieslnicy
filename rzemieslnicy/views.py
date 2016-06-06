@@ -1,15 +1,17 @@
+from uuid import uuid4
+from base64 import b64decode
+
+from django.core.files.base import ContentFile
 from django.views import generic
-from .forms import *
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render
 
-from .models import Institution, Company, Craft
-
-from .services import get_institutions, update_crafts, update_institution_rate
+from rzemieslnicy.forms import *
+from rzemieslnicy.models import Institution, Company, Craft
+from rzemieslnicy.services import get_institutions, update_crafts, update_institution_rate
 
 
 class IndexView(generic.View):
@@ -18,14 +20,15 @@ class IndexView(generic.View):
 
     def get(self, request, *args, **kwargs):
         form = self.form_class()
-        return render(request, self.template_name, {'form': form})
+        premium = Institution.objects.filter(activeservice__paid_service__name='Wyróżnienie')
+        return render(request, self.template_name, {'form': form, 'institutions': premium})
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
         if form.is_valid():
             search = form.cleaned_data['search']
             results = get_institutions(search)
-            return render(request, 'rzemieslnicy/search_result.html', {'institutions': results})
+            return render(request, 'rzemieslnicy/index.html', {'institutions': results})
         return render(request, self.template_name, {'form': form})
 
 
@@ -87,9 +90,13 @@ class AboutView(generic.TemplateView):
     template_name = 'rzemieslnicy/about.html'
 
 
-class AccountView(LoginRequiredMixin, generic.TemplateView):
+class AccountView(LoginRequiredMixin, generic.View):
     template_name = 'rzemieslnicy/account.html'
     login_url = '/login/'
+
+    def get(self, request, *args, **kwargs):
+        change_password_form = ChangePasswordForm(request.user)
+        return render(request, self.template_name, {'change_password_form': change_password_form})
 
 
 class AccountCompanyView(generic.DetailView):
@@ -133,7 +140,9 @@ class InstitutionCreateView(generic.View):
 
     def post(self, request, *args, **kwargs):
         if self.is_owner(request):
-            form = self.form_class(request.POST, company=self.kwargs['pk'])
+            img64 = request.POST['imagebase64'].split(',')[1]
+            request.FILES['image'] = ContentFile(b64decode(img64), '{}.png'.format(uuid4()))
+            form = self.form_class(request.POST, request.FILES, company=self.kwargs['pk'])
             if form.is_valid():
                 form.save()
                 return HttpResponseRedirect('/account/')
@@ -142,6 +151,7 @@ class InstitutionCreateView(generic.View):
 
 
 class AccountInstitutionView(generic.View):
+    map_form_class = MapAddForm
     template_name = 'rzemieslnicy/institution_panel.html'
 
     def is_owner(self, request):
@@ -160,7 +170,8 @@ class AccountInstitutionView(generic.View):
         if self.is_owner(request):
             pk = int(self.kwargs['institution_pk'])
             instituiton = Institution.objects.get(pk=pk)
-            return render(request, self.template_name, {'institution': instituiton})
+            map_form = self.map_form_class()
+            return render(request, self.template_name, {'institution': instituiton, 'map_form': map_form})
         return HttpResponseRedirect('/account/')
 
 
@@ -304,9 +315,75 @@ class MapAddView(generic.View):
         return HttpResponseRedirect('/account')
 
 
+class InstitutionUpdateView(generic.UpdateView):
+    model = Institution
+    fields = ['phone', 'email', 'site', 'area', 'short_description', 'long_description']
+    template_name = 'rzemieslnicy/institution_update.html'
+    success_url = '/account'
+
+    def get_object(self, queryset=None):
+        institution = super().get_object()
+        if not institution.company.tradesman.user == self.request.user:
+            raise Http404
+        return institution
 
 
+class InstitutionDeleteView(generic.DeleteView):
+    model = Institution
 
+    def get_object(self, queryset=None):
+        institution = super().get_object()
+        if not institution.company.tradesman.user == self.request.user:
+            raise Http404
+        return institution
+
+
+class CompanyUpdateView(generic.UpdateView):
+    model = Company
+    fields = ['phone', 'email', 'site']
+    template_name = 'rzemieslnicy/company_update.html'
+    success_url = '/account'
+
+    def get_object(self, queryset=None):
+        company = super().get_object()
+        if not company.tradesman.user == self.request.user:
+            raise Http404
+        return company
+
+
+class CompanyDeleteView(generic.DeleteView):
+    model = Company
+
+    def get_object(self, queryset=None):
+        company = super().get_object()
+        if not company.tradesman.user == self.request.user:
+            raise Http404
+        return company
+
+
+class ChangePasswordView(LoginRequiredMixin, generic.View):
+    login_url = '/login'
+    form_class = ChangePasswordForm
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(user=request.user, data=request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/login/')
+        return render(request, 'rzemieslnicy/account.html', {'change_password_form': form, 'error_change_password': True})
+
+
+class UserUpdateView(generic.UpdateView):
+    model = User
+    fields = ['first_name', 'last_name', 'email']
+    template_name = 'rzemieslnicy/user_update.html'
+    success_url = '/account'
+
+    def get_object(self, queryset=None):
+        user = super().get_object()
+        if not user == self.request.user:
+            raise Http404
+        return user
 
 
 

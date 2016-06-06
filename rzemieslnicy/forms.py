@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth.forms import PasswordChangeForm
 
 from django.contrib.auth.models import User
 from django.contrib.auth import password_validation
@@ -142,6 +143,7 @@ class InstitutionCreationForm(forms.ModelForm):
     site = forms.URLField(required=False)
     short_description = forms.CharField(max_length=100)
     long_description = forms.CharField(widget=forms.Textarea(attrs={'class': "materialize-textarea"}), max_length=500)
+    image = forms.ImageField(label='Obrazek')
 
     def __init__(self, *args, **kwargs):
         self.company = kwargs.pop('company', None)
@@ -215,7 +217,7 @@ class OpinionReportForm(forms.ModelForm):
 
 class ServiceAddForm(forms.ModelForm):
 
-    paid_service = forms.ModelChoiceField(queryset=PaidService.objects.all(), initial=0)
+    paid_service = forms.ModelChoiceField(queryset=PaidService.objects.all(), initial=0, label='Usługa')
 
     class Meta:
         model = ActiveService
@@ -244,6 +246,10 @@ class MapAddForm(forms.ModelForm):
         model = Institution
         widgets = {'location_lat': forms.HiddenInput(),
                    'location_lon': forms.HiddenInput()}
+
+
+class ChangePasswordForm(PasswordChangeForm):
+    pass
 
 
 

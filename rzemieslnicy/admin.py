@@ -18,10 +18,11 @@ class CompanyAdmin(admin.ModelAdmin):
 
 
 class InstitutionAdmin(admin.ModelAdmin):
-    list_display = ('name', 'company', 'city', 'rate')
+    list_display = ('name', 'company', 'city', 'rate', 'is_visible')
     search_fields = ['name', 'company__name', 'city__name']
-    list_filter = ['city']
+    list_filter = ['is_visible', 'city']
     list_select_related = ('company', 'city')
+    list_editable = ['is_visible']
     list_per_page = 25
 
 

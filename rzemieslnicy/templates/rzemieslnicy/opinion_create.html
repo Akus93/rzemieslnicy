@@ -4,14 +4,21 @@
 
     {% load staticfiles %}
     <script src="{% static 'js/add_rating.js' %}"></script>
-
+   <div class="card-panel">
     <form action="" method="post">{% csrf_token %}
         <br>
         Ocena: <div class="rating"></div>
-        {{ form.as_p }}
+        <br>
+        {{ form.text.errors }}
+        <div class="input-field col s12">
+        {{ form.text.label_tag }}
+        <textarea class="materialize-textarea" cols="40" id="id_text" maxlength="500" name="text" rows="10"></textarea>
+        </div>
         <br>
         <button class="waves-effect waves-light btn light-blue lighten-1" name="form" type="submit" >Dodaj opinie</button>
     </form>
+   </div>
+
 
     <script>
         $(document).ready(function(){

@@ -1,6 +1,45 @@
 {% extends 'rzemieslnicy/base.html' %}
 
 {% block content %}
+    <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
+
+    <div class="fixed-action-btn horizontal" style="top: 5.5em; right: 4.5em;">
+        <a class="btn-floating btn-large light-blue">
+          <i class="large material-icons">menu</i>
+        </a>
+        <ul>
+            <li>
+                <a class="btn-floating btn-flat waves-effect waves-light deep-orange accent-2 modal-trigger tooltipped" data-position="bottom"
+                   data-target="map-modal" data-delay="50" data-tooltip="Ustaw mape" href=""{% comment %}href="{% url 'add_map' institution.company.id institution.id %}"{% endcomment %}>
+                        <i class="material-icons">place</i>
+                </a>
+            </li>
+            <li>
+                <a class="btn-floating waves-effect waves-light light-blue tooltipped" data-position="bottom"
+                   data-delay="50" data-tooltip="Edytuj zakład" href="{% url 'institution_update' institution.id %}">
+                    <i class="material-icons" style="font-size: 1.25rem;">edit</i>
+                </a>
+            </li>
+            <li>
+                 <a class="btn-floating waves-effect waves-light red tooltipped" data-position="bottom"
+                   data-delay="50" data-tooltip="Usuń zakład" href="{% url 'institution_delete' institution.id %}">
+                    <i class="material-icons" style="font-size: 1.25rem; margin-left: .5em;">delete_forever</i>
+                </a>
+            </li>
+            <li>
+               <a class="btn-floating btn-flat waves-effect waves-light green tooltipped align-right" data-position="bottom"
+                   data-delay="50" data-tooltip="Dodaj specjalność" href="{% url 'crafts_edit' institution.company.id institution.id %}">
+                    <i class="material-icons">work</i>
+               </a>
+            </li>
+            <li>
+                <a class="btn-floating btn-flat waves-effect waves-light yellow darken-2 tooltipped" data-position="bottom"
+                   data-delay="50" data-tooltip="Kup bonus" href="{% url 'service_add' institution.company.id institution.id %}">
+                        <i class="material-icons">star</i>
+                </a>
+            </li>
+        </ul>
+    </div>
 
     <div class="row">
 
@@ -20,35 +59,77 @@
 
         <div class="col s6">
             <h5>Bonusy:</h5>
-            <div class="collection">
-                {% with services=institution.activeservice_set.all %}
-                    {% for service in services %}
-                        <a class="collection-item">{{ service.paid_service.name }} <br><i>Do końca: {{ service.days_to_end }}</i></a>
-                    {%  endfor %}
-                {% endwith %}
-            </div>
-            <div class="right-align">
-                <a class="btn-floating btn-flat waves-effect waves-light light-blue tooltipped" data-position="top"
-                   data-delay="50" data-tooltip="Kup bonus" href="{% url 'service_add' institution.company.id institution.id %}">
-                        <i class="material-icons">add</i>
-                </a>
-            </div>
+            {% with services=institution.activeservice_set.all %}
+                {% if services %}
+                    <div class="collection">
+                        {% for service in services %}
+                            <a class="collection-item">{{ service.paid_service.name }} <br><i>Do końca: {{ service.days_to_end }}</i></a>
+                        {%  endfor %}
+                    </div>
+                {% else %}
+                    <p>Nie posiadasz żadnych bonusów.</p>
+                {% endif %}
+            {% endwith %}
+
             <h5>Specjalność:</h5>
             {% with ins_crafts=institution.institutioncraft_set.all %}
                 {% for ins_craft in ins_crafts %}
                     <div class="chip">
                         {{ ins_craft.craft.name }}
                     </div>
+                {% empty %}
+                    <p>Nie dodano jeszcze żadnej specjalności.</p>
                 {% endfor %}
             {% endwith %}
-                <a class="btn-floating btn-flat waves-effect waves-light light-blue tooltipped align-right" data-position="top"
-                   data-delay="50" data-tooltip="Dodaj specjalność" href="{% url 'crafts_edit' institution.company.id institution.id %}">
-                    <i class="material-icons">add</i>
-                </a>
-        <br><br>
-            <h5><a href="{% url 'add_map' institution.company.id institution.id %}">Dodaj/edytuj mape</a></h5>
+
+            <h5>Mapa:</h5>
+           {% if institution.location and institution.location.strip %}
+            <style>
+                #map { height: 25em; width: 25em; }
+            </style>
+
+            <div id="map"></div>
+
+           <script>
+                var map = L.map('map').setView([{{ institution.location_lat|stringformat:"f" }}, {{ institution.location_lon|stringformat:"f" }}], 18);
+
+                L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+                    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+                    maxZoom: 19,
+                    id: 'akus93.0825o60g',
+                    accessToken: 'pk.eyJ1IjoiYWt1czkzIiwiYSI6ImNpam8yNDV5OTAwNHJ3MW0zNmZkdjI3ejEifQ.gTaMbROZqrh5_Pz5ENz25g',
+                }).addTo(map);
+
+                var marker = L.marker([{{ institution.location_lat|stringformat:"f" }}, {{ institution.location_lon|stringformat:"f" }}]).addTo(map);
+                marker.bindPopup("<b>{{ institution.name }}</b>").openPopup();
+
+            </script>
+        {% else %}
+               <p>Nie dodano jeszcze mapy.</p>
+        {% endif %}
         </div>
 
     </div>
+
+  <div id="map-modal" class="modal" style="height: 40%;">
+    <div class="modal-content">
+      <h4>Ustaw mapę</h4>
+
+        {{ map_form.media }}
+        <form action="{% url 'add_map' institution.company.id institution.id %}" method="post">{% csrf_token %}
+            {{ map_form.as_p }}
+
+            <div class="modal-footer">
+            <a href="#!" style="margin-left: 1em;" class="modal-action modal-close waves-effect waves-light btn light-blue lighten-1">Anuluj</a>
+            <button class="waves-effect waves-light btn light-blue lighten-1" name="map_form" type="submit" >Ustaw</button>
+            </div>
+        </form>
+
+    </div>
+  </div>
+
+    <script>
+        $('.modal-trigger').leanModal()
+    </script>
 
 {% endblock content %}
